@@ -123,7 +123,14 @@ class CinnamenuApplet extends TextIconApplet {
                         } });
         this.signals.connect(   this.menu,
                                 'open-state-changed',
-                                (...args) => this._onOpenStateToggled(...args));
+                                (...args) => this._onOpenStateToggled(...args)
+        );
+        this.signals.connect(   this.menu,
+                                'menu-animated-closed',
+                                () => {
+                                    this._onMenuClosed();
+                                }
+        );
         //this.signals.connect(global, 'scale-changed', () => refreshDisplay() );
         this.apps = new Apps(this.appSystem);
         //this.session = new SessionManager();
@@ -457,62 +464,67 @@ class CinnamenuApplet extends TextIconApplet {
         if (global.settings.get_boolean('panel-edit-mode')) {
             return false;
         }
-        if (open) {
-            if (this.openMenuTimeoutId) {
-                clearTimeout(this.openMenuTimeoutId);
-                this.openMenuTimeoutId = null;
-            }
-
-            this.display.searchView.tweakTheme();
-            this.display.categoriesView.update();//in case menu editor or enabled category changes.
-            this.display.sidebar.populate();//in case fav files changed
-            this.display.sidebar.scrollToQuitButton();//ensure quit button is visible
-
-            global.stage.set_key_focus(this.display.searchView.searchEntry);
-            if (this.currentCategory === 'places' && !this.settings.showPlaces ||
-                    this.currentCategory === 'recents' && !this.recentsEnabled ||
-                    this.currentCategory === 'favorite_apps' && !this.settings.showFavAppsCategory ||
-                    this.currentCategory.startsWith('emoji:') && !this.settings.showEmojiCategory) {
-                this.currentCategory = 'all';
-            }
-            let openOnCategory = this.currentCategory;
-            if (this.settings.openOnCategory === 4 || !this.settings.showCategories) {
-                openOnCategory = 'all';
-            } else if (this.settings.openOnCategory === 1 && this.settings.showFavAppsCategory) {
-                openOnCategory = 'favorite_apps';
-            } else if (this.settings.openOnCategory === 2 && this.recentsEnabled) {
-                openOnCategory = 'recents';
-            } else if (this.settings.openOnCategory === 3 && this.settings.showPlaces) {
-                openOnCategory = 'places';
-            }
-
-            this.display.updateMenuSize();
-            this.setActiveCategory(openOnCategory);
-
-            //Show panel when auto hide is on.
-            //this.panel.peekPanel(); //no longer works on cinnamon 5.4.x
-
-            //center menu if applet in center zone of top or bottom panel
-            const appletDefinition = AppletManager.getAppletDefinition({applet_id: this.instance_id});
-            if ((this.orientation === St.Side.BOTTOM || this.orientation === St.Side.TOP) &&
-                                                        appletDefinition.location_label === 'center') {
-                const monitor = Main.layoutManager.findMonitorForActor(this.menu.actor);
-                this.menu.shiftToPosition(Math.floor(monitor.width / 2) + monitor.x);
-            }
-
-            //By default, current active category button will have focus. If categories are
-            //hidden, give focus to first app item.
-            if (!this.settings.showCategories) {
-                this.display.appsView.focusFirstItem();
-            }
-        } else {
-            if (this.searchActive) {
-                this._endSearchMode();
-            }
-            this.display.clearFocusedActors();
-            this.display.appsView.clearApps();//for quicker opening of menu
+        if (!open) {
+            return true; // this._onMenuClosed() is called on 'menu-animated-closed' signal to handle closing.
         }
+
+        if (this.openMenuTimeoutId) {
+            clearTimeout(this.openMenuTimeoutId);
+            this.openMenuTimeoutId = null;
+        }
+
+        this.display.searchView.tweakTheme();
+        this.display.categoriesView.update();//in case menu editor or enabled category changes.
+        this.display.sidebar.populate();//in case fav files changed
+        this.display.sidebar.scrollToQuitButton();//ensure quit button is visible
+
+        global.stage.set_key_focus(this.display.searchView.searchEntry);
+        if (this.currentCategory === 'places' && !this.settings.showPlaces ||
+                this.currentCategory === 'recents' && !this.recentsEnabled ||
+                this.currentCategory === 'favorite_apps' && !this.settings.showFavAppsCategory ||
+                this.currentCategory.startsWith('emoji:') && !this.settings.showEmojiCategory) {
+            this.currentCategory = 'all';
+        }
+        let openOnCategory = this.currentCategory;
+        if (this.settings.openOnCategory === 4 || !this.settings.showCategories) {
+            openOnCategory = 'all';
+        } else if (this.settings.openOnCategory === 1 && this.settings.showFavAppsCategory) {
+            openOnCategory = 'favorite_apps';
+        } else if (this.settings.openOnCategory === 2 && this.recentsEnabled) {
+            openOnCategory = 'recents';
+        } else if (this.settings.openOnCategory === 3 && this.settings.showPlaces) {
+            openOnCategory = 'places';
+        }
+
+        this.display.updateMenuSize();
+        this.setActiveCategory(openOnCategory);
+
+        //Show panel when auto hide is on.
+        //this.panel.peekPanel(); //no longer works on cinnamon 5.4.x
+
+        //center menu if applet in center zone of top or bottom panel
+        const appletDefinition = AppletManager.getAppletDefinition({applet_id: this.instance_id});
+        if ((this.orientation === St.Side.BOTTOM || this.orientation === St.Side.TOP) &&
+                                                    appletDefinition.location_label === 'center') {
+            const monitor = Main.layoutManager.findMonitorForActor(this.menu.actor);
+            this.menu.shiftToPosition(Math.floor(monitor.width / 2) + monitor.x);
+        }
+
+        //By default, current active category button will have focus. If categories are
+        //hidden, give focus to first app item.
+        if (!this.settings.showCategories) {
+            this.display.appsView.focusFirstItem();
+        }
+
         return true;
+    }
+
+    _onMenuClosed() {
+        if (this.searchActive) {
+            this._endSearchMode();
+        }
+        this.display.clearFocusedActors();
+        this.display.appsView.clearApps();//for quicker reopening of menu
     }
 
     _onMenuKeyPress(actor, event) {
@@ -1120,16 +1132,19 @@ class CinnamenuApplet extends TextIconApplet {
                 return; //Search mode has ended or search string has changed
             }
 
-            //sort applicationResults[]
+            // sort applicationResults[]
             applicationResults.sort((a, b) =>  b.score - a.score);
             
-            //sort fileResults[]
-            fileResults.sort((a, b) =>  b.score - a.score);//items with equal score are left in
-                                                              //existing order
-            
-            //Remove duplicate fileResults[]. eg. a fav file, a recent file and a folderfile might all
-            //be the same file. Prefer from highest to lowest: isFavoriteFile, isRecentFile,
-            //isFolderviewFile which is easy because fileResults[] should already be in this order.
+            // sort fileResults[]
+            fileResults.sort((a, b) =>  b.score - a.score); // items with equal score are left in
+                                                            // existing order
+
+            if (fileResults.length > 25) { // remove poor results to save time.
+                fileResults.length = 25;
+            }
+            // Remove duplicate fileResults[]. eg. a fav file, a recent file and a folderfile might all
+            // be the same file. Prefer from highest to lowest: isFavoriteFile, isRecentFile,
+            // isFolderviewFile which is easy because fileResults[] should already be in this order.
             for (let i = 0; i < fileResults.length -1; i++) {
                 const app = fileResults[i];
                 if (app.isFavoriteFile || app.isRecentFile) {
@@ -1144,12 +1159,12 @@ class CinnamenuApplet extends TextIconApplet {
                 }
             }
 
-            //Limit applicationResults to 6
+            // Limit applicationResults to 6
             applicationResults.length = Math.min(applicationResults.length, this.getNumberOfItemsToFitColumns(6));
-            //Limit fileResults to 10
+            // Limit fileResults to 10
             fileResults.length = Math.min(fileResults.length, this.getNumberOfItemsToFitColumns(10));
             
-            //Display results
+            // Display results
             this.display.appsView.populate_init(calculatorResult);
             if (applicationResults.length > 0) {
                 this.display.appsView.populate_add(applicationResults, _('Applications'));
@@ -1199,7 +1214,7 @@ class CinnamenuApplet extends TextIconApplet {
             const r = /[\(\)\+=/\*\.;,]/
             const probablyMath = r.test(exp);
             if (probablyMath) {
-                calculatorResult = e.message;
+                calculatorResult = _("Calculator: ") + e.message;
             }
         }
 
@@ -1393,28 +1408,32 @@ class CinnamenuApplet extends TextIconApplet {
             if (FILE_PREFIX) {
                 fpattern = pattern.substring(2);
             }
-            //Call function searchNextDir() consecutively and asynchronously on each folder to be searched so
-            //that search can be interupted at any time. Starting with home folder, all folders to be
-            //searched are added to foldersToDo[] with currentFolderIndex being the folder currently
-            //being searched. Searching is cancelled when the search string has changed (thisSearchId !==
-            //this.currentSearchId). Searching is completed when all folders have been searched
-            //(currentFolderIndex === foldersToDo.length - 1)
+            // Call function searchNextDir() consecutively and asynchronously on each folder to be searched so
+            // that search can be interupted at any time. Starting with home folder, all folders to be
+            // searched are added to foldersToDo[]. Searching is cancelled when the search string has
+            // changed (thisSearchId !== this.currentSearchId).
 
             let updateInterval = 100;//update the results after the first 100ms even if search hasn't finished
-            const MAX_FOLDERS_TODO = 200;
+            const MAX_FOLDERS_TO_SEARCH = 50000;
+            const FOLLOW_SYMLINKS = false;
+            const FILE_SEARCH_DEBUG = false;
             const results = [];
             const foldersToDo = [];
-            foldersToDo.push(this.settings.searchStartFolder);//start search in (default value) home directory
-            let currentFolderIndex = 0;
+            foldersToDo.push(this.settings.searchStartFolder);// start search in (default value) home directory
+            let foldersSearched = 0;
             let lastUpdateTime = Date.now();
+            const total_timer=Date.now();
 
             const searchNextDir = (thisSearchId) => {
-                const folder = foldersToDo[currentFolderIndex];
+                const folder = foldersToDo.pop();
+                
                 const dir = Gio.file_new_for_path(folder);
                 let enumerator;
-                dir.enumerate_children_async(
-                            'standard::name,standard::type,standard::icon,standard::content-type,' +
-                            'standard::is-hidden,standard::is-symlink',
+                let timer=Date.now();
+                if (FILE_SEARCH_DEBUG) {
+                    log("searching: " + folder);
+                }
+                dir.enumerate_children_async('standard::name,standard::type,standard::is-symlink',
                             Gio.FileQueryInfoFlags.NONE, GLib.PRIORITY_DEFAULT, null, (source, result) => {
                     try {
                         enumerator = source.enumerate_children_finish(result);
@@ -1434,28 +1453,29 @@ class CinnamenuApplet extends TextIconApplet {
                         next = enumerator.next_file(null);
                     }
 
-                    let searchTimeLimit = Date.now() + 200; // allow max 200ms to search each folder to
-                    //prevent freezing if a folder has a large number of files.
+                    let searchTimeLimit = Date.now() + 2000; // allow max 2 seconds to search each folder
                     while (next && Date.now() < searchTimeLimit) {
-                        if (next.get_is_hidden()) {
-                            next = enumerator.next_file(null);
-                            continue;
-                        }
                         const filename = next.get_name();
+                        if (filename.startsWith(".")) {
+                            next = enumerator.next_file(null);
+                            continue; // skip hidden files
+                        }
                         const isDirectory = next.get_file_type() === Gio.FileType.DIRECTORY;
                         const filePath = folder + (folder === '/' ? '' : '/') + filename;
                         const match = searchStr(fpattern, filename, true, true);
                         if (match.score > 1) { //any word boundary match
                             const file = Gio.file_new_for_path(filePath);
+                            const fileInfo = file.query_info('standard::icon,standard::content-type',
+                                                                Gio.FileQueryInfoFlags.NONE, null);
                             match.score -= 0.01;
                             //if file then treat as isFolderviewFile and if directory then treat as isPlace
                             const foundFile = {
                                         name: filename,
                                         score: match.score * (fpattern.length > 2 ? 1 : 0.9),
                                         nameWithSearchMarkup: match.result,
-                                        gicon: next.get_icon(),
+                                        gicon: fileInfo.get_icon(),
                                         uri: file.get_uri(),
-                                        mimeType: next.get_content_type(),
+                                        mimeType: fileInfo.get_content_type(),
                                         description: filePath,
                                         isPlace: isDirectory,
                                         isDirectory: isDirectory,
@@ -1472,8 +1492,8 @@ class CinnamenuApplet extends TextIconApplet {
                         }
 
                         //Add subdirectories to foldersToDo[]
-                        if (isDirectory && !next.get_is_symlink() &&
-                                                            foldersToDo.length < MAX_FOLDERS_TODO) {
+                        if (isDirectory && (!next.get_is_symlink() || FOLLOW_SYMLINKS) &&
+                                                    foldersSearched < MAX_FOLDERS_TO_SEARCH) {
                             foldersToDo.push(filePath);
                         }
                         
@@ -1483,10 +1503,11 @@ class CinnamenuApplet extends TextIconApplet {
                     if (enumerator) {
                         enumerator.close(null);
                     }
-
+                    if (FILE_SEARCH_DEBUG) {
+                        log ("todo: " + foldersToDo.length + " done: " + foldersSearched + " time: " + (Date.now() - timer) + " : total " + (Date.now() - total_timer));
+                    }
                     //update display of results at intervals or when search completed
-                    if (currentFolderIndex === foldersToDo.length - 1 ||
-                                                    Date.now() - lastUpdateTime > updateInterval) {
+                    if (foldersToDo.length === 0 || Date.now() - lastUpdateTime > updateInterval) {
                         if (results.length > 0 && this.searchActive &&
                                                                 thisSearchId === this.currentSearchId) {
                             fileResults = fileResults.concat(results);
@@ -1498,13 +1519,12 @@ class CinnamenuApplet extends TextIconApplet {
                     }
 
                     //continue search if not completed
-                    if (currentFolderIndex < foldersToDo.length - 1) {
-                        currentFolderIndex++;
-                        searchNextDir(thisSearchId);
+                    if (foldersToDo.length > 0) {
+                        foldersSearched++;
+                        Meta.later_add(Meta.LaterType.IDLE, () => { searchNextDir(thisSearchId); });
                     }
-
                 });//end of enumerate_children_async
-            };
+            };// end searchNextDir()
 
             searchNextDir(this.currentSearchId);
         });
