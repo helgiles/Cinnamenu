@@ -1,3 +1,5 @@
+![screenshot](screenshot.png)
+
 Cinnamenu
 ========
 _Version: 5.4.15_
