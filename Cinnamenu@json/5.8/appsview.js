@@ -18,6 +18,31 @@ const { _,
 const ApplicationsViewMode = Object.freeze({LIST: 0, GRID: 1});
 const DescriptionPlacement = Object.freeze({TOOLTIP: 0, UNDER: 1, NONE: 2});
 
+function listp(obj, indent = 0) {
+    if (typeof obj !== "object" || !obj) {
+        return obj;
+    }
+
+    let out = " ".repeat(indent) + "{\n";
+    for (let key in obj) {
+        if (!Object.hasOwn(obj, key)) {
+            out += ">";
+        }
+        try {
+            if (typeof obj[key] === "object") {
+                out += listp(obj[key], indent + 2); 
+            } else {
+                out += " ".repeat(indent + 2)
+                out += key + ": " + obj[key] + "\n";
+            }
+        } catch {
+            out += "[error]\n";
+        }
+    }
+    out += " ".repeat(indent) + "}\n";
+    return out;
+}
+
 class AppButton {
     constructor(appThis, app) {
         this.appThis = appThis;
@@ -199,9 +224,10 @@ class AppButton {
             return `rgba(${col.red},${col.green},${col.blue},${decPlaces2(col.alpha / 255)})`;
         };
 
+        const isColorLight = (col) => (col.red + col.green + col.blue) > 381;
+        
         const lightenOrDarkenColor = (col) => { //lighten a dark color or darken a light color
-            const isLightTheme = (col.red + col.green + col.blue) > 364;
-            const amt = isLightTheme ? -15 : 15;
+            const amt = isColorLight(col) ? -15 : 15;
             col.red += amt;
             col.green += amt;
             col.blue += amt;
@@ -212,8 +238,13 @@ class AppButton {
         //            col.alpha = Math.floor((col.alpha + col.alpha + 255) / 3);
         //            return col; };
         const bgColor = this.appThis.menu.actor.get_theme_node().get_background_color();
-        if (bgColor.to_string().startsWith('#00000000')) {
-            Object.assign(bgColor, {red: 20, green: 20, blue: 20, alpha: 255});
+        if (bgColor.to_string().startsWith('#00000000')) { //bg color unknown
+            const fgColor = this.appThis.menu.actor.get_theme_node().get_foreground_color();
+            if (isColorLight(fgColor)) {
+                Object.assign(bgColor, {red: 30, green: 30, blue: 30, alpha: 200});
+            } else {
+                Object.assign(bgColor, {red: 250, green: 250, blue: 250, alpha: 200});
+            }
         }
 
         let tileStyle = 'border: 2px; border-color: ' + toRgbaString(bgColor) + '; ';
