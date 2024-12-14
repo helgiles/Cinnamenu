@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/linuxmint/cinnamon-spices-applets/"
 "issues\n"
 "POT-Creation-Date: 2024-08-06 22:42-0400\n"
-"PO-Revision-Date: 2023-12-23 13:52+0200\n"
+"PO-Revision-Date: 2024-11-12 20:08+0200\n"
 "Last-Translator: Kimmo Kujansuu <mrkujansuu@gmail.com>\n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -23,7 +23,7 @@ msgid "Initializing"
 msgstr "Alustetaan"
 
 msgid "Find files..."
-msgstr "Hae tiedostoja..."
+msgstr "Tiedostohaku..."
 
 msgid "Please wait..."
 msgstr "Odota hetki..."
@@ -49,8 +49,9 @@ msgstr "Ei viimeaikaisia kohteita"
 msgid "Settings"
 msgstr "Asetukset"
 
+#: 5.8/applet.js:1127
 msgid "Files"
-msgstr ""
+msgstr "Tiedostot"
 
 msgid "Other search results"
 msgstr "Muut hakutulokset"
@@ -95,22 +96,22 @@ msgid "Recent"
 msgstr "Viimeisimmät"
 
 msgid "Favorite apps"
-msgstr "Suosittuja sovelluksia"
+msgstr "Sovelluksia"
 
 msgid "light skin tone"
-msgstr "vaalea ihonsävy"
+msgstr "vaalea sävy"
 
 msgid "medium-light skin tone"
-msgstr "keskivaalea ihonsävy"
+msgstr "keskivaalea sävy"
 
 msgid "medium skin tone"
-msgstr "keskisävyinen iho"
+msgstr "keskisävy"
 
 msgid "medium-dark skin tone"
-msgstr "keskitumman ihon sävy"
+msgstr "hämärä sävy"
 
 msgid "dark skin tone"
-msgstr "tumma ihonsävy"
+msgstr "tumma sävy"
 
 msgid "Remove category"
 msgstr "Poista ryhmä"
@@ -342,10 +343,10 @@ msgstr ""
 "hymiöhaku."
 
 msgid "Layout"
-msgstr "Ulkoasu"
+msgstr "Asettelu"
 
 msgid "Behavior"
-msgstr "Käyttäytyminen"
+msgstr "Toiminta"
 
 msgid "Appearance"
 msgstr "Ulkoasu"
@@ -363,7 +364,7 @@ msgid "Menu"
 msgstr "Valikko"
 
 msgid "Applications view mode"
-msgstr "Sovellukset näytetään"
+msgstr "Näytä sovellukset"
 
 msgid "List"
 msgstr "Luettelo"
@@ -375,13 +376,13 @@ msgid "View applications as list or grid"
 msgstr "Näytä sovellukset luettelona tai ruudukkona"
 
 msgid "Show sidebar"
-msgstr "Näytä sivupalkki"
+msgstr "Näytä valikon sivupalkki"
 
 msgid "Show the sidebar in the menu"
 msgstr "Näytä sivupalkki valikossa"
 
 msgid "Sidebar location"
-msgstr "Sivupalkin sijainti"
+msgstr "Sivupalkin paikka"
 
 msgid "Top"
 msgstr "Ylös"
@@ -399,7 +400,7 @@ msgid "Choose where to show the sidebar"
 msgstr "Valitse, missä sivupalkki näytetään"
 
 msgid "Show favorites on sidebar"
-msgstr "Näytä sivupalkissa suosikkeja"
+msgstr "Näytä suosikit sivupalkissa"
 
 msgid "None"
 msgstr "Ei mitään"
@@ -414,19 +415,19 @@ msgid "Apps and files"
 msgstr "Sovellukset ja tiedostot"
 
 msgid "Show your favorite apps and file icons on the sidebar"
-msgstr "Näytä sovellussuosikit ja kuvakkeet sivupalkissa"
+msgstr "Näytä suosikiksi merkityt ja sivupalkissa"
 
 msgid "Application description placement"
-msgstr "Sovelluksen kuvauksen paikka"
+msgstr "Näytä sovelluksen kuvaus"
 
 msgid "Tooltips"
-msgstr "Työkaluvinkissä"
+msgstr "Työkaluvihjeessä"
 
 msgid "Under titles"
 msgstr "Nimen alapuolella"
 
 msgid "Choose where to show application descriptions"
-msgstr "Valitse, missä sovellusten kuvaukset näytetään"
+msgstr "Valitse, missä kuvaukset näytetään"
 
 msgid "Show categories"
 msgstr "Näytä ryhmät"
@@ -441,22 +442,22 @@ msgid "Show bookmarks and places category in the menu"
 msgstr "Näytä kirjanmerkit ja sijainti valikossa"
 
 msgid "Show recent items"
-msgstr "Näytä viimeisimmät käytetyt tiedostot"
+msgstr "Näytä viimeisimmät tiedostot"
 
 msgid "Show recent items category in the menu"
-msgstr "Näytä viimeisimmät kohteet ryhmänä valikossa"
+msgstr "Näytä viimeisimmät kohteet omana ryhmänä valikossa"
 
 msgid "Show favorite apps category"
-msgstr "Näytä suositut ♥ sovellukset joita on käytetty eniten"
+msgstr "Näytä suositut ♥ sovellukset"
 
 msgid "Show your favorite apps category in the menu"
-msgstr "Näytä eniten käytetyt sovellukset ryhmänä valikossa"
+msgstr "Näytä suositut sovellukset omana ryhmänä valikossa"
 
 msgid "Show home folder"
-msgstr "Näytä kotikansiot"
+msgstr "Näytä kotikansio"
 
 msgid "Show home folder category in the menu"
-msgstr "Näytä valikossa Kotikansion ryhmä valikossa"
+msgstr "Näytä kotikansio valikossa"
 
 msgid "Show emoji category"
 msgstr "Näytä valikoima hymiöitä"
@@ -483,13 +484,13 @@ msgid "Menu hover delay"
 msgstr "Valikon valintaviive"
 
 msgid "Use menu animations"
-msgstr "Valikon animaatiot"
+msgstr "Valikon animaatio"
 
 msgid "Animate the menu on open and close"
-msgstr "Animoi valikko avatessa ja sulkeutuessa"
+msgstr "Valikko animoidaan avatessa ja suljettaessa"
 
 msgid "Activate categories on click"
-msgstr "Aktivoi ryhmät auki painalluksella"
+msgstr "Avaa ryhmät painalluksella"
 
 msgid "Activate categories on click instead of on hover"
 msgstr "Ryhmät avautuvat hiiren painalluksella osoittamisen sijaan"
@@ -513,35 +514,35 @@ msgid "Show hidden files in folder view"
 msgstr "Näytä piilotetut tiedostot kansioissa"
 
 msgid "Emoji search"
-msgstr "Hymiöiden haku"
+msgstr "Hymiöhaku"
 
 msgid "Show emojis in search results"
 msgstr "Näytä hymiöt hakutuloksissa"
 
 msgid "Web search option"
-msgstr "Hakukoneiden vaihtoehdot"
+msgstr "Hakukone"
 
 msgid "Show an internet search option in search results"
-msgstr "Näytä hakutuloksissa hakukoneiden vaihtoehtoja"
+msgstr "Näytä hakukoneiden tuloksia"
 
 msgid "Web search suggestions"
-msgstr "Verkkohaku"
+msgstr "Haku Internet"
 
 msgid ""
 "With web search option, also show search suggestions. (Note: Search "
 "suggestions are provided by DuckDuckGo)"
 msgstr ""
-"Verkkohaku valinnalla voit näyttää myös hakuehdotuksia (tämä käyttää "
-"DuckDuckGon hakusovellusta)"
+"Verkkohaku valinnalla voit näyttää myös hakuehdotuksia (käyttää DuckDuckGo "
+"hakukonetta)"
 
 msgid "Search home folder"
-msgstr "Hae kotikansiosta"
+msgstr "Haku kotikansiosta"
 
 msgid "When searching, also search my home folder for files"
 msgstr "Haettaessa etsi myös tiedostoja kotikansiosta"
 
 msgid "Web history search"
-msgstr "Hakuhistorian haku"
+msgstr "Haku hakuhistoriasta"
 
 msgid ""
 "When searching, also search my browser's history (Google Chrome, Chromium, "
@@ -569,13 +570,13 @@ msgstr ""
 "paketti libgda (Arch jakelut) ja käynnistä tietokone uudelleen."
 
 msgid "Wikipedia search"
-msgstr "Haku Wikipediasta"
+msgstr "Haku Wikipedia"
 
 msgid "Show some Wikipedia results"
 msgstr "Näytä joitain tuloksia Wikipediasta"
 
 msgid "Wikipedia language"
-msgstr "Wikipedian kieli"
+msgstr "Wikipedia kieli"
 
 msgid ""
 "\n"
@@ -589,8 +590,8 @@ msgstr ""
 "Huomaa: Joitakin hakuja voidaan silti käyttää, vaikka et olisi ottanut niitä "
 "käyttöön hyödyntäen etuliitettä hakemiseen.\n"
 "Esimerkiksi: jos haluat etsiä hymiötä, kirjoita \"e heart\" löytää sydämiä. "
-"Samoin etuliitteitä \"f\" tiedostojen hakuun, \"h\" selainhistoriaan ja "
-"\"b\" kirjanmerkkien hakuun.\n"
+"Samoin etuliitteitä \"f\" tiedostojen hakuun, \"h\" selainhistoriaan ja \"b"
+"\" kirjanmerkkien hakuun.\n"
 
 msgid "Use a custom icon"
 msgstr "Vaihda kuvake"
@@ -602,10 +603,10 @@ msgid "Panel icon"
 msgstr "Paneelin kuvake"
 
 msgid "Use a custom icon size"
-msgstr "Mukauta kuvakeen kokoa"
+msgstr "Kuvakkeen koko"
 
 msgid "Use a custom size for the panel icon"
-msgstr "Mukauta paneelin kuvakkeiden kokoa"
+msgstr "Mukauta paneelin kuvakkeen kokoa"
 
 msgid "Panel icon size (pixels)"
 msgstr "Paneelin kuvakkeen koko (pikseliä)"
@@ -614,7 +615,7 @@ msgid "Choose a custom size for the panel icon"
 msgstr "Valitse paneelin kuvakkeeseen mukautettu koko"
 
 msgid "Panel text"
-msgstr "Paneelin teksti"
+msgstr "Teksti paneelissa"
 
 msgid "Text to show beside the panel icon"
 msgstr "Kuvakkeen vieressä näkyvä teksti"
@@ -632,13 +633,13 @@ msgid "Sidebar icon size (pixels)"
 msgstr "Sivupalkin kuvakkeen koko (pikseliä)"
 
 msgid "Use sidebar box style"
-msgstr "Sivupalkin ohjelmien taakse varjostettu laatikko"
+msgstr "Sivupalkin ohjelmissa varjostettu laatikko"
 
 msgid "Use a sidebar box style"
 msgstr "Sivupalkin ohjelmien taakse varjostettu laatikko"
 
 msgid "Use tile style"
-msgstr "Kuvakkeen taakse varjostettu laatikko"
+msgstr "Kuvakkeissa varjostettu laatikko"
 
 msgid ""
 "Use a tile style for the application buttons (Note: may not work on some "
@@ -659,7 +660,7 @@ msgid ""
 "• Drag and drop menu categories to change their order."
 msgstr ""
 "\n"
-"• Voit muuttaa järjestystä vetämällä ja pudottamalla valikon ryhmiä."
+"• Muuta järjestystä vetämällä ja pudottamalla."
 
 msgid ""
 "\n"
@@ -667,8 +668,8 @@ msgid ""
 "them."
 msgstr ""
 "\n"
-"• Kansiot voidaan määrittää ja poistaa valikkoryhmiksi painamalla niitä "
-"hiiren oikealla painikkeella."
+"• Kansiot voidaan asettaa ja poistaa ryhmiksi painamalla hiiren oikealla "
+"painikkeella."
 
 msgid ""
 "\n"
@@ -679,9 +680,9 @@ msgid ""
 "editor.\n"
 msgstr ""
 "\n"
-"• Additional key options:\n"
-"ctrl-p — Avaa korostetun sovelluksen käynnistimen valintaikkunan.\n"
-"ctrl-d — Avaa korostetun sovelluksen .desktop tiedoston oletus "
+"• Näppäinvaihtoehdot:\n"
+"ctrl-p — Avaa valitun sovelluksen käynnistimen valintaikkunan.\n"
+"ctrl-d — Avaa valitun sovelluksen .desktop-tiedoston muokattavaksi "
 "tekstieditoriin.\n"
 
 msgid "Search Providers"
@@ -694,7 +695,7 @@ msgid "Recent files settings"
 msgstr "Viimeisten tiedostojen asetukset"
 
 msgid "Enable autoscrolling in application list"
-msgstr "Ota automaattinen vieritys käyttöön ohjelmien luettelossa"
+msgstr "Automattinen vieritys ohjelmaluettelossa"
 
 msgid "Show web bookmarks"
 msgstr "Näytä selaimen kirjanmerkit"
@@ -703,7 +704,7 @@ msgid ""
 "Show your browser's web bookmarks in the menu.\n"
 "Note: Install package gir1.2-gda-5.0 to read firefox bookmarks."
 msgstr ""
-"Näytä selaimesi kirjanmerkit valikossa.\n"
+"Näytä selaimen kirjanmerkit valikossa.\n"
 "Huomaa: Asenna paketti gir1.2-gda-5.0 joka osaa lukea firefox kirjanmerkit."
 
 msgid "Enable searching of open windows"
