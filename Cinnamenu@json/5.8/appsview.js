@@ -89,6 +89,21 @@ class AppButton {
                                 x_fill: false, y_fill: false,
                                 x_align: isListView ? St.Align.START : St.Align.MIDDLE,
                                 y_align: St.Align.MIDDLE});
+
+        //set minimum top & bottom padding for grid view appbuttons as themes are designed for list view.
+        const buttonTopPadding = this.actor.get_theme_node().get_padding(St.Side.TOP);
+        const buttonBottomPadding = this.actor.get_theme_node().get_padding(St.Side.BOTTOM);
+        
+        const MIN_PADDING = 8;
+        this.addedStyle = "";
+        if (buttonTopPadding < MIN_PADDING) {
+            this.addedStyle += `padding-top: ${MIN_PADDING}px; `;
+        }
+        if (buttonBottomPadding < MIN_PADDING) {
+            this.addedStyle += `padding-bottom: ${MIN_PADDING}px; `;
+        }
+        this.actor.set_style(this.addedStyle);
+
         this._setButtonStyleNormal();
         this._setNewAppHighlightClass();
 
@@ -180,33 +195,32 @@ class AppButton {
         }
 
         const toRgbaString = (col) => {
-                const decPlaces2 = (n) => Math.round(n * 100) / 100;
-                return `rgba(${col.red},${col.green},${col.blue},${decPlaces2(col.alpha / 255)})`; };
+            const decPlaces2 = (n) => Math.round(n * 100) / 100;
+            return `rgba(${col.red},${col.green},${col.blue},${decPlaces2(col.alpha / 255)})`;
+        };
+
         const lightenOrDarkenColor = (col) => { //lighten a dark color or darken a light color
-                    const isLightTheme = (col.red + col.green + col.blue) > 364;
-                    const amt = isLightTheme ? -15 : 15;
-                    col.red += amt;
-                    col.green += amt;
-                    col.blue += amt;
-                    return col; };
-        const getThemeBackgroundColor = () => {
-            return this.appThis.menu.actor.get_theme_node().get_background_color();
-        }
+            const isLightTheme = (col.red + col.green + col.blue) > 364;
+            const amt = isLightTheme ? -15 : 15;
+            col.red += amt;
+            col.green += amt;
+            col.blue += amt;
+            return col;
+        };
 
         //const opaqueify = (col) => { //make color 1/3 more opaque
         //            col.alpha = Math.floor((col.alpha + col.alpha + 255) / 3);
         //            return col; };
-        const bgColor = getThemeBackgroundColor();
-        if (bgColor.to_string().startsWith('#000000')) {
-            bgColor.red = 20;
-            bgColor.green = 20;
-            bgColor.blue = 20;
+        const bgColor = this.appThis.menu.actor.get_theme_node().get_background_color();
+        if (bgColor.to_string().startsWith('#00000000')) {
+            Object.assign(bgColor, {red: 20, green: 20, blue: 20, alpha: 255});
         }
-        let addedStyle = 'border:2px; border-color:' + toRgbaString(bgColor) + '; ';
+
+        let tileStyle = 'border: 2px; border-color: ' + toRgbaString(bgColor) + '; ';
         if (!this.has_focus) {
-            addedStyle += 'background-color:' + toRgbaString(lightenOrDarkenColor(bgColor)) + ';';
+            tileStyle += 'background-color: ' + toRgbaString(lightenOrDarkenColor(bgColor)) + ';';
         }
-        this.actor.set_style(addedStyle);
+        this.actor.set_style(this.addedStyle + tileStyle);
     }
 
     _setNewAppHighlightClass() {
@@ -532,18 +546,6 @@ class AppsView {
                 if (this.column > this.getGridValues().columns - 1) {
                     this.column = 0;
                     this.rownum++;
-                }
-
-                //set minimum top & bottom padding for appbuttons as theme node is designed for list view.
-                const buttonTopPadding = appButton.actor.get_theme_node().get_padding(St.Side.TOP);
-                const buttonBottomPadding = appButton.actor.get_theme_node().get_padding(St.Side.BOTTOM);
-                
-                const MIN_PADDING = 8;
-                if (buttonTopPadding < MIN_PADDING) {
-                    appButton.actor.style += `padding-top: ${MIN_PADDING}px; `;
-                }
-                if (buttonBottomPadding < MIN_PADDING) {
-                    appButton.actor.style += `padding-bottom: ${MIN_PADDING}px; `;
                 }
             }
         });
