@@ -115,21 +115,7 @@ class AppButton {
                                 x_align: isListView ? St.Align.START : St.Align.MIDDLE,
                                 y_align: St.Align.MIDDLE});
 
-        //set minimum top & bottom padding for grid view appbuttons as themes are designed for list view.
-        const buttonTopPadding = this.actor.get_theme_node().get_padding(St.Side.TOP);
-        const buttonBottomPadding = this.actor.get_theme_node().get_padding(St.Side.BOTTOM);
         
-        const MIN_PADDING = 8;
-        this.addedStyle = "";
-        if (buttonTopPadding < MIN_PADDING) {
-            this.addedStyle += `padding-top: ${MIN_PADDING}px; `;
-        }
-        if (buttonBottomPadding < MIN_PADDING) {
-            this.addedStyle += `padding-bottom: ${MIN_PADDING}px; `;
-        }
-        this.actor.set_style(this.addedStyle);
-
-        this._setButtonStyleNormal();
         this._setNewAppHighlightClass();
 
         //----------dnd--------------
@@ -204,21 +190,17 @@ class AppButton {
     _setButtonStyleNormal() {
         this.has_focus = false;
         this.actor.set_style_class_name('menu-application-button');
-        this._addTileStyle();
+        if (this.appThis.settings.useTileStyle) this._addTileStyle();
     }
 
     _setButtonStyleSelected() {
         this.has_focus = true;
         this.actor.set_style_class_name('menu-application-button-selected');
         
-        this._addTileStyle();
+        if (this.appThis.settings.useTileStyle) this._addTileStyle();
     }
 
     _addTileStyle() {
-        if (!this.appThis.settings.useTileStyle) {
-            return;
-        }
-
         const toRgbaString = (col) => {
             const decPlaces2 = (n) => Math.round(n * 100) / 100;
             return `rgba(${col.red},${col.green},${col.blue},${decPlaces2(col.alpha / 255)})`;
@@ -247,11 +229,27 @@ class AppButton {
             }
         }
 
-        let tileStyle = 'border: 2px; border-color: ' + toRgbaString(bgColor) + '; ';
+        let tileStyle = `border: 2px; border-color: ${toRgbaString(bgColor)}; `;
         if (!this.has_focus) {
-            tileStyle += 'background-color: ' + toRgbaString(lightenOrDarkenColor(bgColor)) + ';';
+            tileStyle += `background-color: ${toRgbaString(lightenOrDarkenColor(bgColor))}; `;
         }
-        this.actor.set_style(this.addedStyle + tileStyle);
+        this.actor.set_style(this.paddingStyle + tileStyle);
+    }
+
+    setPaddingStyle() {
+        //set minimum top & bottom padding for grid view appbuttons as themes are designed for list view.
+        const buttonTopPadding = this.actor.get_theme_node().get_padding(St.Side.TOP);
+        const buttonBottomPadding = this.actor.get_theme_node().get_padding(St.Side.BOTTOM);
+        
+        const MIN_PADDING = 8;
+        this.paddingStyle = "";
+        if (buttonTopPadding < MIN_PADDING) {
+            this.paddingStyle += `padding-top: ${MIN_PADDING}px; `;
+        }
+        if (buttonBottomPadding < MIN_PADDING) {
+            this.paddingStyle += `padding-bottom: ${MIN_PADDING}px; `;
+        }
+        this.actor.set_style(this.paddingStyle);
     }
 
     _setNewAppHighlightClass() {
@@ -578,7 +576,10 @@ class AppsView {
                     this.column = 0;
                     this.rownum++;
                 }
+
+                appButton.setPaddingStyle(); //only needed for grid buttons
             }
+            appButton._setButtonStyleNormal();
         });
     }
 
