@@ -249,7 +249,7 @@ class CategoryButton {
     }
 }
 
-/* Creates the categories box and array of CategoryButtons (buttons[]). Updates the categories and
+/* Creates the categories box and array of CategoryButtons (this.buttons[]). Updates the categories and
  * populates the categoriesBox. */
 class CategoriesView {
     constructor(appThis) {

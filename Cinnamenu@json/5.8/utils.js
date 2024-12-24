@@ -2,7 +2,6 @@ const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 const Gettext = imports.gettext;
 const Mainloop = imports.mainloop;
-const Lang = imports.lang;
 const St = imports.gi.St;
 const Main = imports.ui.main;
 const ByteArray = imports.byteArray;
@@ -99,7 +98,7 @@ class NewTooltip {
         this.center_x = center_x;
         this.text = text;
         if (this.text && this.text !== '') {
-            this.showTimer = Mainloop.timeout_add(250, Lang.bind(this, this.show));
+            this.showTimer = Mainloop.timeout_add(250, () => this.show());
         }
     }
 

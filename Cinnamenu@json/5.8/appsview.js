@@ -237,6 +237,7 @@ class AppButton {
     }
 
     setPaddingStyle() {
+        if (this.paddingStyle) return; //already done.
         //set minimum top & bottom padding for grid view appbuttons as themes are designed for list view.
         const buttonTopPadding = this.actor.get_theme_node().get_padding(St.Side.TOP);
         const buttonBottomPadding = this.actor.get_theme_node().get_padding(St.Side.BOTTOM);

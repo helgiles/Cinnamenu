@@ -105,7 +105,10 @@ class CinnamenuApplet extends TextIconApplet {
         
         this.signals.connect(Main.themeManager, 'theme-set', () => {
                                                     this._updateIconAndLabel();
-                                                    setTimeout(() => refreshDisplay());
+                                                    Mainloop.timeout_add(0, () => {
+                                                        refreshDisplay();
+                                                        return false;
+                                                    });
                                                 });
         this.iconTheme = Gtk.IconTheme.get_default();
         this.signals.connect(this.iconTheme, 'changed', () => this._updateIconAndLabel());
@@ -174,13 +177,12 @@ class CinnamenuApplet extends TextIconApplet {
             if (this.settings.activateOnHover) {
                 this.signals.connect(this.actor, 'enter-event', () => {
                     if (!this.menu.isOpen && !this.openMenuTimeoutId) {
-                        this.openMenuTimeoutId = setTimeout(() =>
-                                                openMenu(), this.settings.hoverDelayMs);
+                        this.openMenuTimeoutId = Mainloop.timeout_add(this.settings.hoverDelayMs, () => openMenu());
                     }
                 });
                 this.signals.connect(this.actor, 'leave-event', () => {
                                 if (this.openMenuTimeoutId) {
-                                    clearTimeout(this.openMenuTimeoutId);
+                                    Mainloop.source_remove(this.openMenuTimeoutId);
                                     this.openMenuTimeoutId = null;
                                 }
                 });
@@ -469,7 +471,7 @@ class CinnamenuApplet extends TextIconApplet {
         }
 
         if (this.openMenuTimeoutId) {
-            clearTimeout(this.openMenuTimeoutId);
+            Mainloop.source_remove(this.openMenuTimeoutId);
             this.openMenuTimeoutId = null;
         }
 
@@ -1004,9 +1006,10 @@ class CinnamenuApplet extends TextIconApplet {
                                 this.setActiveCategory('emoji:');
                                 Meta.later_add(Meta.LaterType.IDLE,
                                     () => {
-                                        setTimeout(
-                                            () => this.setActiveCategory('emoji:' + category.name),
-                                            100);
+                                        Mainloop.timeout_add(100, () => {
+                                            this.setActiveCategory('emoji:' + category.name);
+                                            return false;
+                                        });
                                     });
                             });
                     }
