@@ -88,8 +88,7 @@ margin to override*/
 
 .menu-applications-grid-box .menu-application-button {
     /*remove l/r padding in grid view to allow maximum space for label*/
-    padding-left: 0px;
-    padding-right: 0px;
+    padding: 10px 0px;
 }
 
 .menu-application-button-label {}
@@ -104,8 +103,7 @@ margin to override*/
 
 .menu-applications-grid-box .menu-application-button-selected {
     /*remove l/r padding in grid view to allow maximum space for label*/
-    padding-left: 0px;
-    padding-right: 0px;
+    padding: 10px 0px;
 }
 
 .menu-application-button:highlighted, /*Used to highlight newly installed apps in list or grid view.*/

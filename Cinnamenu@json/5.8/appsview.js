@@ -233,24 +233,7 @@ class AppButton {
         if (!this.has_focus) {
             tileStyle += `background-color: ${toRgbaString(lightenOrDarkenColor(bgColor))}; `;
         }
-        this.actor.set_style(this.paddingStyle + tileStyle);
-    }
-
-    setPaddingStyle() {
-        if (this.paddingStyle) return; //already done.
-        //set minimum top & bottom padding for grid view appbuttons as themes are designed for list view.
-        const buttonTopPadding = this.actor.get_theme_node().get_padding(St.Side.TOP);
-        const buttonBottomPadding = this.actor.get_theme_node().get_padding(St.Side.BOTTOM);
-        
-        const MIN_PADDING = 8;
-        this.paddingStyle = "";
-        if (buttonTopPadding < MIN_PADDING) {
-            this.paddingStyle += `padding-top: ${MIN_PADDING}px; `;
-        }
-        if (buttonBottomPadding < MIN_PADDING) {
-            this.paddingStyle += `padding-bottom: ${MIN_PADDING}px; `;
-        }
-        this.actor.set_style(this.paddingStyle);
+        this.actor.set_style(tileStyle);
     }
 
     _setNewAppHighlightClass() {
@@ -319,18 +302,20 @@ class AppButton {
         hideTooltipIfVisible();
     }
 
-    _handleButtonRelease(actor, e) {
-        const button = e.get_button();
+    _handleButtonRelease(actor, event) {
+        const button = event.get_button();
         if (button === Clutter.BUTTON_PRIMARY) {
             if (this.appThis.display.contextMenu.isOpen) {
+                this.appThis.display.contextMenu.close();
                 this.appThis.display.clearFocusedActors();
                 this.handleEnter();
             } else {
-                this.activate(e);
+                this.activate(event);
             }
             return Clutter.EVENT_STOP;
         } else if (button === Clutter.BUTTON_SECONDARY) {
             if (this.appThis.display.contextMenu.isOpen) {
+                this.appThis.display.contextMenu.close();
                 this.appThis.display.clearFocusedActors();
                 this.handleEnter();
                 return Clutter.EVENT_STOP;
@@ -338,7 +323,7 @@ class AppButton {
                 if (this.app.isApplication || this.app.isFolderviewFile ||
                     this.app.isDirectory || this.app.isFavoriteFile ||
                     this.app.emoji || this.app.isRecentFile){
-                    this.openContextMenu(e);
+                    this.openContextMenu(event);
                 }
                 return Clutter.EVENT_STOP;
             }
@@ -394,7 +379,7 @@ class AppButton {
     openContextMenu(e) {
         this._setButtonStyleSelected();
         hideTooltipIfVisible();
-        this.appThis.display.contextMenu.openApp(this.app, e, this.actor);
+        this.appThis.display.contextMenu.openAppContextMenu(this.app, e, this.actor);
     }
 
     _resetAllAppsOpacity() {
@@ -499,7 +484,7 @@ class AppsView {
                                         (this.appThis.currentCategory === 'all' ||
                                         this.appThis.currentCategory.startsWith('/'))) {
                                 hideTooltipIfVisible();
-                                this.appThis.display.contextMenu.openAppsView(event);
+                                this.appThis.display.contextMenu.openAppsViewContextMenu(event);
                                 return Clutter.EVENT_STOP;
                             }
                             return Clutter.EVENT_PROPAGATE;
@@ -577,8 +562,6 @@ class AppsView {
                     this.column = 0;
                     this.rownum++;
                 }
-
-                appButton.setPaddingStyle(); //only needed for grid buttons
             }
             appButton._setButtonStyleNormal();
         });

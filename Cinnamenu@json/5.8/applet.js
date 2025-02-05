@@ -56,9 +56,6 @@ class CinnamenuApplet extends TextIconApplet {
     constructor(metadata, orientation, panel_height, instance_id) {
         super(orientation, panel_height, instance_id);
         this.setAllowedLayout(AllowedLayout.BOTH);
-        if (orientation === St.Side.BOTTOM || orientation === St.Side.TOP) {
-            this.set_applet_label(_('Initializing'));
-        }
         this.privacy_settings = new Gio.Settings({schema_id: 'org.cinnamon.desktop.privacy'});
         this.appFavorites = getAppFavorites();
         this.currentCategory = 'all';
@@ -78,11 +75,13 @@ class CinnamenuApplet extends TextIconApplet {
         this._applet_context_menu.addMenuItem(searchFilesMenuItem);
         searchFilesMenuItem.connect('activate', () => {
                         Util.spawnCommandLine(__meta.path + '/search.py ' + GLib.get_home_dir()); });
-        this.resizer = new PopupResizeHandler(this.menu.actor,
-                                              () => this.orientation,
-                                              (w,h) => this.display.onMenuResized(w,h),
-                                              () => this.settings.customMenuWidth * global.ui_scale,
-                                              () => this.settings.customMenuHeight * global.ui_scale);
+        this.resizer = new PopupResizeHandler(
+            this.menu.actor,
+            () => this.orientation,
+            (w,h) => this.display.onMenuResized(w,h),
+            () => this.settings.customMenuWidth * global.ui_scale,
+            () => this.settings.customMenuHeight * global.ui_scale
+        );
         this.signals.connect(this.privacy_settings, 'changed::' + REMEMBER_RECENT_KEY,
                                                         () => this._onEnableRecentsChange());
 
@@ -104,35 +103,37 @@ class CinnamenuApplet extends TextIconApplet {
         }
         
         this.signals.connect(Main.themeManager, 'theme-set', () => {
-                                                    this._updateIconAndLabel();
-                                                    Mainloop.timeout_add(0, () => {
-                                                        refreshDisplay();
-                                                        return false;
-                                                    });
-                                                });
+            this._updateIconAndLabel();
+            Mainloop.timeout_add(0, () => {
+                refreshDisplay();
+                return false;
+            });
+        });
         this.iconTheme = Gtk.IconTheme.get_default();
         this.signals.connect(this.iconTheme, 'changed', () => this._updateIconAndLabel());
         this.signals.connect(this.appSystem, 'installed-changed', () => {
-                                                    this.apps.installedChanged();
-                                                    refreshDisplay();
-                                                });
+            this.apps.installedChanged();
+            refreshDisplay();
+        });
         this.signals.connect(this.appFavorites, 'changed', () => {
-                        if (this.display) {// Check if display is initialised
-                            this.display.sidebar.populate();
-                            this.display.updateMenuSize();
-                            if (this.currentCategory === 'favorite_apps' && !this.searchActive) {
-                                this.setActiveCategory(this.currentCategory);
-                            }
-                        } });
-        this.signals.connect(   this.menu,
-                                'open-state-changed',
-                                (...args) => this._onOpenStateToggled(...args)
+            if (this.display) {// Check if display is initialised
+                this.display.sidebar.populate();
+                this.display.updateMenuSize();
+                if (this.currentCategory === 'favorite_apps' && !this.searchActive) {
+                    this.setActiveCategory(this.currentCategory);
+                }
+            }
+        });
+        this.signals.connect(
+            this.menu,
+            'open-state-changed',
+            (...args) => this._onOpenStateToggled(...args)
         );
-        this.signals.connect(   this.menu,
-                                'menu-animated-closed',
-                                () => {
-                                    this._onMenuClosed();
-                                }
+        this.signals.connect(this.menu,
+            'menu-animated-closed',
+            () => {
+                this._onMenuClosed();
+            }
         );
         //this.signals.connect(global, 'scale-changed', () => refreshDisplay() );
         this.apps = new Apps(this.appSystem);
@@ -146,23 +147,14 @@ class CinnamenuApplet extends TextIconApplet {
                 this.settings.overlayKey,
                 () => {                    
                     if (Main.overview.visible || Main.expo.visible) return;
-                    if (!this.getOtherInstance ||
-                                    global.screen.get_current_monitor() === this.panel.monitorIndex) {
-                        //if (!this.isOpen) {
-                        //    this.panel.peekPanel();
-                        //}
-                        this.menu.toggle_with_options(this.settings.enableAnimation);
-                    } else if (typeof this.getOtherInstance === 'function') {
-                        const instance = this.getOtherInstance();
-                        //if (!instance.menu.isOpen) {
-                        //    instance.panel.peekPanel();
-                        //}
-                        instance.menu.toggle_with_options.call( instance.menu,
-                                                                instance.settings.enableAnimation);
+                    if (!this.isOpen) {
+                        this.panel.peekPanel();
                     }
+                    this.menu.toggle_with_options(this.settings.enableAnimation);
                 }
             );
         };
+
         const updateActivateOnHover = () => {
             const openMenu = () => {
                 if (!this._applet_context_menu.isOpen) {
@@ -258,7 +250,6 @@ class CinnamenuApplet extends TextIconApplet {
         updateActivateOnHover();
         updateKeybinding();
         this.display = new Display(this);
-        this.initialised = true;
         this._updateIconAndLabel();
     }
 //----------------TextIconApplet callbacks----------------
@@ -277,7 +268,6 @@ class CinnamenuApplet extends TextIconApplet {
     }
 
     on_applet_removed_from_panel() {
-        this.willUnmount = true;
         Main.keybindingManager.removeHotKey('overlay-key-' + this.instance_id);
         if (!this.appletSettings) {
             return;
@@ -289,21 +279,7 @@ class CinnamenuApplet extends TextIconApplet {
     }
 
     on_applet_clicked() {
-        if (!this.initialised) {
-            this.set_applet_label(_('Please wait...'));
-            return;
-        }
-
         this.menu.toggle_with_options(this.settings.enableAnimation);
-    }
-
-    on_applet_instances_changed(instance) {
-        if (instance && instance.instance_id !== this.instance_id) {
-            this.getOtherInstance = () => instance;
-            instance.getOtherInstance = () => this;
-        } else if (!instance && !this.willUnmount) {
-            this.getOtherInstance = null;
-        }
     }
 
     _setStyle() {
@@ -1241,16 +1217,19 @@ class CinnamenuApplet extends TextIconApplet {
                         { file: Gio.file_new_for_path(__meta.path + '/../icons/calc.png')});
             }
             otherResults.push({
-                            isSearchResult: true,
-                            name: ans_str,//('Solution:') + ' ' + ans,
-                            description: _('Click to copy'),
-                            deleteAfterUse: true,
-                            icon: new St.Icon({ gicon: this.calcGIcon,
-                                                icon_size: this.getAppIconSize() }),
-                            activate: () => {
-                                    const clipboard = St.Clipboard.get_default();
-                                    clipboard.set_text(St.ClipboardType.CLIPBOARD, ans_str);}
-                         });
+                isSearchResult: true,
+                name: ans_str,//('Solution:') + ' ' + ans,
+                description: _('Click to copy'),
+                deleteAfterUse: true,
+                icon: new St.Icon({
+                    gicon: this.calcGIcon,
+                    icon_size: this.getAppIconSize()
+                }),
+                activate: () => {
+                    const clipboard = St.Clipboard.get_default();
+                    clipboard.set_text(St.ClipboardType.CLIPBOARD, ans_str);
+                }
+            });
             calculatorResult = pattern_raw + " = " + ans_str;
         }
 
@@ -1276,12 +1255,13 @@ class CinnamenuApplet extends TextIconApplet {
                                 {file: Gio.file_new_for_path(__meta.path + '/../icons/' + iconName)});
 
             otherResults.push({
-                        isSearchResult: true,
-                        name: pattern_raw,
-                        description: '',
-                        deleteAfterUse: true,
-                        icon: new St.Icon({ gicon: gicon, icon_size: this.getAppIconSize()}),
-                        activate: () => Util.spawn(['xdg-open', url + encodeURIComponent(pattern_raw)]) });
+                isSearchResult: true,
+                name: pattern_raw,
+                description: '',
+                deleteAfterUse: true,
+                icon: new St.Icon({ gicon: gicon, icon_size: this.getAppIconSize()}),
+                activate: () => Util.spawn(['xdg-open', url + encodeURIComponent(pattern_raw)])
+            });
             if (this.settings.webSuggestionsOption) {
                 searchSuggestions(pattern_raw, (results) => {
                     if (results.length > 0 && this.searchActive && thisSearchId === this.currentSearchId) {
@@ -1385,8 +1365,9 @@ class CinnamenuApplet extends TextIconApplet {
                         deleteAfterUse: true,
                         emoji: emoji[EMOJI_CODE],
                         activate: () => {
-                                const clipboard = St.Clipboard.get_default();
-                                clipboard.set_text(St.ClipboardType.CLIPBOARD, emoji[EMOJI_CODE]); }
+                            const clipboard = St.Clipboard.get_default();
+                            clipboard.set_text(St.ClipboardType.CLIPBOARD, emoji[EMOJI_CODE]);
+                        }
                     });
                 }
             });
@@ -1654,9 +1635,6 @@ class CinnamenuApplet extends TextIconApplet {
                                                     !recentInfo.get_mime_type().startsWith(type)) {
                 return;
             }
-            if (!recentInfo.exists()) {
-                return;
-            }
 
             const new_recent = {
                 name: recentInfo.get_display_name(),
@@ -1685,12 +1663,16 @@ class CinnamenuApplet extends TextIconApplet {
         if (clearRecentsButton) {
             res.push(clearRecentsButton.app);
         } else {
-            res.push( { name: _('Clear List'),
-                        description: '',
-                        icon: new St.Icon({ icon_name: 'edit-clear',
-                                            icon_type: St.IconType.SYMBOLIC,
-                                            icon_size: this.getAppIconSize()}),
-                                            isClearRecentsButton: true });
+            res.push({
+                name: _('Clear List'),
+                description: '',
+                icon: new St.Icon({
+                    icon_name: 'edit-clear',
+                    icon_type: St.IconType.SYMBOLIC,
+                    icon_size: this.getAppIconSize()
+                }),
+                isClearRecentsButton: true
+            });
         }
 
         return res;

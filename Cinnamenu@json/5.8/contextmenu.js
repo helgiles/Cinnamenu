@@ -76,7 +76,7 @@ class ContextMenu {
         this.isOpen = false;
     }
 
-    openApp(app, e, buttonActor) {
+    openAppContextMenu(app, e, buttonActor) {
         //e is used to position context menu at mouse coords. If keypress opens menu then
         //e is undefined and buttonActor position is used instead.
         this.contextMenuButtons.forEach(button => button.destroy());
@@ -117,7 +117,7 @@ class ContextMenu {
         this._showMenu(e, buttonActor);
     }
 
-    openCategory(categoryId, e, buttonActor) {
+    openCategoryContextMenu(categoryId, e, buttonActor) {
         //e is used to position context menu at mouse coords. If keypress opens menu then
         //e is undefined and buttonActor position is used instead.
         this.contextMenuButtons.forEach(button => button.destroy());
@@ -150,7 +150,7 @@ class ContextMenu {
         this._showMenu(e, buttonActor);
     }
 
-    openAppsView(event) {
+    openAppsViewContextMenu(event) {
         //event is used to position context menu at mouse coords.
         this.contextMenuButtons.forEach(button => button.destroy());
         this.contextMenuButtons = [];
