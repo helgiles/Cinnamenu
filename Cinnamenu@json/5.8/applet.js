@@ -64,7 +64,6 @@ class CinnamenuApplet extends TextIconApplet {
         this.menuManager = new PopupMenuManager(this);
         this.menu = new AppletPopupMenu(this, this.orientation);
         this.menuManager.addMenu(this.menu);
-        this.menu.setCustomStyleClass('menu-background cinnamenu');//starkmenu-background');
         this.signals = new SignalManager(null);
         this.appSystem = Cinnamon.AppSystem.get_default();
         this._canUninstallApps = GLib.file_test("/usr/bin/cinnamon-remove-application",
@@ -127,17 +126,13 @@ class CinnamenuApplet extends TextIconApplet {
         this.signals.connect(
             this.menu,
             'open-state-changed',
-            (...args) => this._onOpenStateToggled(...args)
+            this._onOpenStateToggled.bind(this)
         );
         this.signals.connect(this.menu,
             'menu-animated-closed',
-            () => {
-                this._onMenuClosed();
-            }
+            this._onMenuClosed.bind(this)
         );
-        //this.signals.connect(global, 'scale-changed', () => refreshDisplay() );
         this.apps = new Apps(this.appSystem);
-        //this.session = new SessionManager();
         this.screenSaverProxy = new ScreenSaverProxy();
         this.sessionManager = new GnomeSession.SessionManager();
 
@@ -173,10 +168,10 @@ class CinnamenuApplet extends TextIconApplet {
                     }
                 });
                 this.signals.connect(this.actor, 'leave-event', () => {
-                                if (this.openMenuTimeoutId) {
-                                    Mainloop.source_remove(this.openMenuTimeoutId);
-                                    this.openMenuTimeoutId = null;
-                                }
+                    if (this.openMenuTimeoutId) {
+                        Mainloop.source_remove(this.openMenuTimeoutId);
+                        this.openMenuTimeoutId = null;
+                    }
                 });
             }
         };
@@ -237,9 +232,10 @@ class CinnamenuApplet extends TextIconApplet {
         { key: 'use-box-style',             value: 'useBoxStyle',           cb: refreshDisplay },
         { key: 'use-tile-style',            value: 'useTileStyle',          cb: refreshDisplay }
         ].forEach(setting => this.appletSettings.bind(
-                          setting.key,
-                          setting.value,
-                          setting.cb ? (...args) => setting.cb.call(this, ...args) : null ) );
+            setting.key,
+            setting.value,
+            setting.cb ? setting.cb.bind(this) : null )
+        );
 
         if (!this.settings.searchStartFolder) {
             //This is a hidden config option.
@@ -409,7 +405,7 @@ class CinnamenuApplet extends TextIconApplet {
         favs.add(uri);
         //xapp favs list doesn't update synchronously after adding fav so add small
         //delay before updating menu.
-        Mainloop.timeout_add(100, () => { this.updateAfterXappFavoriteFileChange(); });
+        Mainloop.timeout_add(100, this.updateAfterXappFavoriteFileChange.bind(this));
     }
 
     xappRemoveFavoriteFile(uri) {
@@ -897,7 +893,7 @@ class CinnamenuApplet extends TextIconApplet {
     }
 
     getNumberOfItemsToFitColumns(minimumItems) {
-        //adjust number of items according to number of columns in grid view to make
+        //adjust number of items according to number of columns to make
         //best use of available space.
         if (this.settings.applicationsViewMode === ApplicationsViewMode.LIST) {
             return minimumItems;
@@ -1025,6 +1021,7 @@ class CinnamenuApplet extends TextIconApplet {
             }
             return;
         }
+        
         //---start search---
         this.currentSearchStr = searchText;
 
@@ -1054,12 +1051,11 @@ class CinnamenuApplet extends TextIconApplet {
     }
 
     _doSearch(pattern_raw, thisSearchId) {
-        //this fuction has been called asynchronously meaning that a keypress may have changed the
+        //this function has been called asynchronously meaning that a keypress may have changed the
         //search query before this function is called. Check that this search is still valid.
         if (!this.searchActive || thisSearchId !== this.currentSearchId) {
             return;
         }
-        //if (!text || !text.trim()) return;
 
         const pattern = graphemeBaseChars(pattern_raw).toLocaleUpperCase().trim();
         
@@ -1218,7 +1214,7 @@ class CinnamenuApplet extends TextIconApplet {
             }
             otherResults.push({
                 isSearchResult: true,
-                name: ans_str,//('Solution:') + ' ' + ans,
+                name: ans_str,
                 description: _('Click to copy'),
                 deleteAfterUse: true,
                 icon: new St.Icon({
@@ -1296,10 +1292,9 @@ class CinnamenuApplet extends TextIconApplet {
                 }
                 bookmarks.forEach(bookmark => {
                     if (bookmark.name) {
-                        const match = searchStr(bpattern, bookmark.name);
-                        if (match.score > SEARCH_THRESHOLD) {
-                            bookmark.score = match.score;
-                            bookmark.nameWithSearchMarkup = match.result;
+                        const score = searchStr(bpattern, bookmark.name);
+                        if (score > SEARCH_THRESHOLD) {
+                            bookmark.score = score;
                             webBookmarksResults.push(bookmark);
                         }
                     }
@@ -1351,16 +1346,15 @@ class CinnamenuApplet extends TextIconApplet {
             }
 
             EMOJI.forEach(emoji => {
-                const match1 = searchStr(epattern, emoji[EMOJI_NAME], true);
-                const match2 = searchStr(epattern, emoji[EMOJI_KEYWORDS], true);
-                match2.score *= 0.95; //slightly lower priority for keyword match
-                const bestMatchScore = Math.max(match1.score, match2.score);
-                if (bestMatchScore > SEARCH_THRESHOLD) {
+                const nameScore = searchStr(epattern, emoji[EMOJI_NAME], true);
+                let keywordScore = searchStr(epattern, emoji[EMOJI_KEYWORDS], true);
+                keywordScore *= 0.95; //slightly lower priority for keyword match
+                const bestScore = Math.max(nameScore, keywordScore);
+                if (bestScore > SEARCH_THRESHOLD) {
                     emojiResults.push({
                         name: emoji[EMOJI_NAME],
-                        score: bestMatchScore,
+                        score: bestScore,
                         description: _('Click to copy'),
-                        nameWithSearchMarkup: match1.result,
                         isSearchResult: true,
                         deleteAfterUse: true,
                         emoji: emoji[EMOJI_CODE],
@@ -1446,17 +1440,16 @@ class CinnamenuApplet extends TextIconApplet {
                         }
                         const isDirectory = next.get_file_type() === Gio.FileType.DIRECTORY;
                         const filePath = folder + (folder === '/' ? '' : '/') + filename;
-                        const match = searchStr(fpattern, filename, true, true);
-                        if (match.score > 1) { //any word boundary match
+                        let matchScore = searchStr(fpattern, filename, true, true);
+                        if (matchScore > 1) { //any word boundary match
                             const file = Gio.file_new_for_path(filePath);
                             const fileInfo = file.query_info('standard::icon,standard::content-type',
                                                                 Gio.FileQueryInfoFlags.NONE, null);
-                            match.score -= 0.01;
+                            matchScore -= 0.01;
                             //if file then treat as isFolderviewFile and if directory then treat as isPlace
                             const foundFile = {
                                         name: filename,
-                                        score: match.score * (fpattern.length > 2 ? 1 : 0.9),
-                                        nameWithSearchMarkup: match.result,
+                                        score: matchScore * (fpattern.length > 2 ? 1 : 0.9),
                                         gicon: fileInfo.get_icon(),
                                         uri: file.get_uri(),
                                         mimeType: fileInfo.get_content_type(),
@@ -1532,12 +1525,13 @@ class CinnamenuApplet extends TextIconApplet {
                         providerResult.icon.icon_size = this.getAppIconSize();
                     } else if (providerResult.icon_app) {
                         providerResult.icon = providerResult.icon_app.create_icon_texture(
-                                                                            this.getAppIconSize());
+                                                                        this.getAppIconSize());
                     } else if (providerResult.icon_filename) {
                         providerResult.icon = new St.Icon({
-                                gicon: new Gio.FileIcon({
+                            gicon: new Gio.FileIcon({
                                     file: Gio.file_new_for_path(providerResult.icon_filename)}),
-                                icon_size: this.getAppIconSize() });
+                            icon_size: this.getAppIconSize()
+                        });
                     }
                 });
                 if (!this.searchActive || thisSearchId !== this.currentSearchId ||
@@ -1567,8 +1561,6 @@ class CinnamenuApplet extends TextIconApplet {
  *  .gicon
  *  .iconFactory()
  *  .score
- *  .nameWithSearchMarkup
- *  .descriptionWithSearchMarkup
  *  .desktop_file_path
  *  .isApplication
  *  .isPlace
@@ -1598,10 +1590,9 @@ class CinnamenuApplet extends TextIconApplet {
         const res = [];
 
         this.listRecentByType('all', 100).forEach(recentItem => {
-            const match = searchStr(pattern, recentItem.name);
-            if (recentItem.name && match.score > SEARCH_THRESHOLD) {
-                recentItem.score = match.score;
-                recentItem.nameWithSearchMarkup = match.result;
+            const score = searchStr(pattern, recentItem.name);
+            if (recentItem.name && score > SEARCH_THRESHOLD) {
+                recentItem.score = score;
                 res.push(recentItem);
             }
         });
@@ -1700,25 +1691,29 @@ class CinnamenuApplet extends TextIconApplet {
             res.push(place);
         });
         res.splice(2, 0, {
-                id: 'special:trash',
-                name: _('Trash'),
-                description: _('Trash'),
-                isPlace: true,
-                activate: () => Util.spawnCommandLine('xdg-open trash:'),
-                iconFactory: (size) => new St.Icon({icon_name: 'user-trash',
-                                                    icon_type: St.IconType.FULLCOLOR,
-                                                    icon_size: size })
-                        });
+            id: 'special:trash',
+            name: _('Trash'),
+            description: _('Trash'),
+            isPlace: true,
+            activate: () => Util.spawnCommandLine('xdg-open trash:'),
+            iconFactory: (size) => new St.Icon({
+                icon_name: 'user-trash',
+                icon_type: St.IconType.FULLCOLOR,
+                icon_size: size
+            })
+        });
         res.splice(2, 0, {
-                id: 'special:computer',
-                name: _('Computer'),
-                description: _('Computer'),
-                isPlace: true,
-                activate: () => Util.spawnCommandLine('xdg-open computer:'),
-                iconFactory: (size) => new St.Icon({icon_name: 'computer',
-                                                    icon_type: St.IconType.FULLCOLOR,
-                                                    icon_size: size })
-                        });
+            id: 'special:computer',
+            name: _('Computer'),
+            description: _('Computer'),
+            isPlace: true,
+            activate: () => Util.spawnCommandLine('xdg-open computer:'),
+            iconFactory: (size) => new St.Icon({
+                icon_name: 'computer',
+                icon_type: St.IconType.FULLCOLOR,
+                icon_size: size
+            })
+        });
 
         return res;
     }
@@ -1727,10 +1722,9 @@ class CinnamenuApplet extends TextIconApplet {
         const places = this.listPlaces();
         const res = [];
         places.forEach(place => {
-            const match = searchStr(pattern, place.name);
-            if (match.score > SEARCH_THRESHOLD) {
-                place.nameWithSearchMarkup = match.result;
-                place.score = match.score;
+            const score = searchStr(pattern, place.name);
+            if (score > SEARCH_THRESHOLD) {
+                place.score = score;
                 res.push(place);
             }
         });
@@ -1747,12 +1741,14 @@ class CinnamenuApplet extends TextIconApplet {
             if (found) {
                 res.push(found.app);
             } else {
-                res.push({  name: info.display_name,
-                            description: Gio.File.new_for_uri(info.uri).get_path(),
-                            gicon: Gio.content_type_get_icon(info.cached_mimetype),
-                            isFavoriteFile: true,
-                            mimeType: info.cached_mimetype,
-                            uri: info.uri });
+                res.push({
+                    name: info.display_name,
+                    description: Gio.File.new_for_uri(info.uri).get_path(),
+                    gicon: Gio.content_type_get_icon(info.cached_mimetype),
+                    isFavoriteFile: true,
+                    mimeType: info.cached_mimetype,
+                    uri: info.uri
+                });
             }
         });
 
@@ -1767,10 +1763,9 @@ class CinnamenuApplet extends TextIconApplet {
         const res = [];
 
         favs.forEach(item => {
-            const match = searchStr(pattern, item.name);
-            if (item.name && match.score > SEARCH_THRESHOLD) {
-                item.score = match.score;
-                item.nameWithSearchMarkup = match.result;
+            const score = searchStr(pattern, item.name);
+            if (item.name && score > SEARCH_THRESHOLD) {
+                item.score = score;
                 res.push(item);
             }
         });
@@ -1799,14 +1794,16 @@ class CinnamenuApplet extends TextIconApplet {
             if (this.settings.showHiddenFiles || !next.get_is_hidden()) {
                 let file = Gio.file_new_for_path(folder + (folder === '/' ? '' : '/') + filename);
                 const isDirectory = next.get_file_type() === Gio.FileType.DIRECTORY;
-                res.push({  name: next.get_name(),
-                            gicon: next.get_icon(),
-                            uri: file.get_uri(),
-                            mimeType: next.get_content_type(),
-                            isDirectory: isDirectory,
-                            description: '',
-                            isFolderviewFile: !isDirectory,
-                            deleteAfterUse: true });
+                res.push({
+                    name: next.get_name(),
+                    gicon: next.get_icon(),
+                    uri: file.get_uri(),
+                    mimeType: next.get_content_type(),
+                    isDirectory: isDirectory,
+                    description: '',
+                    isFolderviewFile: !isDirectory,
+                    deleteAfterUse: true
+                });
                 file = null;
             }
             next = enumerator.next_file(null);
@@ -1816,30 +1813,33 @@ class CinnamenuApplet extends TextIconApplet {
         }
 
         res.sort((a, b) => {    
-                        if (!a.isDirectory && b.isDirectory) return 1;
-                        else if (a.isDirectory && !b.isDirectory) return -1;
-                        else if (a.isDirectory && b.isDirectory &&
-                                    a.name.startsWith('.') && !b.name.startsWith('.')) return 1;
-                        else if (a.isDirectory && b.isDirectory &&
-                                    !a.name.startsWith('.') && b.name.startsWith('.')) return -1;
-                        else {
-                            const nameA = a.name.toUpperCase();
-                            const nameB = b.name.toUpperCase();
-                            return (nameA > nameB) ? 1 : ( (nameA < nameB) ? -1 : 0 );
-                        }
-                    });
+            if (!a.isDirectory && b.isDirectory) return 1;
+            else if (a.isDirectory && !b.isDirectory) return -1;
+            else if (a.isDirectory && b.isDirectory &&
+                        a.name.startsWith('.') && !b.name.startsWith('.')) return 1;
+            else if (a.isDirectory && b.isDirectory &&
+                        !a.name.startsWith('.') && b.name.startsWith('.')) return -1;
+            else {
+                const nameA = a.name.toUpperCase();
+                const nameB = b.name.toUpperCase();
+                return (nameA > nameB) ? 1 : ( (nameA < nameB) ? -1 : 0 );
+            }
+        });
         const parent = dir.get_parent();
         if (parent) {// Add back button
-            res.unshift({   name: 'Back',
-                            uri: parent.get_uri(),
-                            icon: new St.Icon({ icon_name: 'edit-undo-symbolic',
-                                                icon_type: St.IconType.SYMBOLIC,
-                                                icon_size: this.getAppIconSize() }),
-                            mimeType: 'inode/directory',
-                            isBackButton: true,
-                            description: '',
-                            deleteAfterUse: true
-                        });
+            res.unshift({
+                name: 'Back',
+                uri: parent.get_uri(),
+                icon: new St.Icon({
+                    icon_name: 'edit-undo-symbolic',
+                    icon_type: St.IconType.SYMBOLIC,
+                    icon_size: this.getAppIconSize()
+                }),
+                mimeType: 'inode/directory',
+                isBackButton: true,
+                description: '',
+                deleteAfterUse: true
+            });
         }
 
         return {results: res, errorMsg: errorMsg};
@@ -1866,28 +1866,26 @@ class CinnamenuApplet extends TextIconApplet {
 }
 
 class Apps {//This obj provides the .app objects for all the applications categories
-    #appsByCategory = {};
-    #appSystem;
-    #dirs = [];
-    #knownApps = [];
-    #appsNeedRefresh = false;
-    #newInstance = true;
-    
     constructor(appSystem) {
-        this.#appSystem = appSystem;
-        this.#initAppCategories();
+        this._appsByCategory = {};
+        this._dirs = [];
+        this._knownApps = [];
+        this._appsNeedRefresh = false;
+        this._newInstance = true;
+        this.appSystem = appSystem;
+        this._initAppCategories();
     }
 
     installedChanged() {
-        this.#appsNeedRefresh = true;
+        this._appsNeedRefresh = true;
     }
 
-    #initAppCategories() {
+    _initAppCategories() {
         const apps_sort = arr => arr.sort((a, b) => a.name.localeCompare(b.name, undefined,
                                                 {sensitivity: "base", ignorePunctuation: true}));
-        this.#dirs = [];
-        this.#appsByCategory = {};
-        const iter = this.#appSystem.get_tree().get_root_directory().iter();
+        this._dirs = [];
+        this._appsByCategory = {};
+        const iter = this.appSystem.get_tree().get_root_directory().iter();
         let nextType;
         while ((nextType = iter.next()) !== CMenu.TreeItemType.INVALID) {
             if (nextType === CMenu.TreeItemType.DIRECTORY) {
@@ -1896,19 +1894,20 @@ class Apps {//This obj provides the .app objects for all the applications catego
                     continue;
                 }
                 const dirId = dir.get_menu_id();
-                const foundApps = this.#loadDirectory(dir);
+                const foundApps = this._loadDirectory(dir);
                 if (foundApps.length > 0) {
                     apps_sort(foundApps);
-                    this.#appsByCategory[dirId] = foundApps;
-                    this.#dirs.push(dir);
+                    this._appsByCategory[dirId] = foundApps;
+                    dir.dirId = dirId;
+                    this._dirs.push(dir);
                 }
             }
         }
 
-        this.#dirs.sort((a, b) => {
+        this._dirs.sort((a, b) => {
             const prefCats = ['ADMINISTRATION', 'PREFERENCES'];
-            const prefIdA = prefCats.indexOf(a.get_menu_id().toUpperCase());
-            const prefIdB = prefCats.indexOf(b.get_menu_id().toUpperCase());
+            const prefIdA = prefCats.indexOf(a.dirId.toUpperCase());
+            const prefIdB = prefCats.indexOf(b.dirId.toUpperCase());
             if (prefIdA < 0 && prefIdB >= 0) return -1;
             if (prefIdA >= 0 && prefIdB < 0) return 1;
             return a.get_name().localeCompare(b.get_name(), undefined,
@@ -1919,33 +1918,33 @@ class Apps {//This obj provides the .app objects for all the applications catego
         let all = [];
         let allApps = [];
         let allSettings = [];
-        Object.keys(this.#appsByCategory).forEach(key => {
-                    all = all.concat(this.#appsByCategory[key]);
-                    if (['Preferences','Administration'].includes(key)) {
-                        allSettings = allSettings.concat(this.#appsByCategory[key]);
-                    } else {
-                        allApps = allApps.concat(this.#appsByCategory[key]);
-                    }
+        Object.keys(this._appsByCategory).forEach(key => {
+            all = all.concat(this._appsByCategory[key]);
+            if (['Preferences','Administration'].includes(key)) {
+                allSettings = allSettings.concat(this._appsByCategory[key]);
+            } else {
+                allApps = allApps.concat(this._appsByCategory[key]);
+            }
         });
-        this.#appsByCategory.all = Array.from(new Set(all));//remove duplicates
-        apps_sort(this.#appsByCategory.all);
-        this.#appsByCategory.allApps = Array.from(new Set(allApps));//remove duplicates
-        apps_sort(this.#appsByCategory.allApps);
-        this.#appsByCategory.allSettings = Array.from(new Set(allSettings));//remove duplicates
-        apps_sort(this.#appsByCategory.allSettings);
+        this._appsByCategory.all = Array.from(new Set(all));//remove duplicates
+        apps_sort(this._appsByCategory.all);
+        this._appsByCategory.allApps = Array.from(new Set(allApps));//remove duplicates
+        apps_sort(this._appsByCategory.allApps);
+        this._appsByCategory.allSettings = Array.from(new Set(allSettings));//remove duplicates
+        apps_sort(this._appsByCategory.allSettings);
         //remove apps from allSettings if they're also in allApps
-        this.#appsByCategory.allApps.forEach( app => {
-            const i = this.#appsByCategory.allSettings.findIndex( a => a === app );
+        this._appsByCategory.allApps.forEach( app => {
+            const i = this._appsByCategory.allSettings.findIndex( a => a === app );
             if (i > -1) {
-                this.#appsByCategory.allSettings.splice(i, 1);
+                this._appsByCategory.allSettings.splice(i, 1);
             }
         })
         
-        this.#appsNeedRefresh = false;
-        this.#newInstance = false;
+        this._appsNeedRefresh = false;
+        this._newInstance = false;
     }
 
-    #loadDirectory(dir) {
+    _loadDirectory(dir) {
         let foundApps = [];
         const iter = dir.iter();
         let nextType;
@@ -1953,7 +1952,7 @@ class Apps {//This obj provides the .app objects for all the applications catego
             if (nextType === CMenu.TreeItemType.ENTRY) {
                 const entry = iter.get_entry();
                 const id = entry.get_desktop_file_id();
-                const app = this.#appSystem.lookup_app(id);
+                const app = this.appSystem.lookup_app(id);
                 if  (!app || app.get_nodisplay()) {
                     continue;
                 }
@@ -1965,16 +1964,16 @@ class Apps {//This obj provides the .app objects for all the applications catego
                 app.id = id;
                 app.desktop_file_path = entry.get_desktop_file_path();
 
-                if (this.#knownApps.indexOf(id) < 0) {//unknown app
-                    if (!this.#newInstance) {
+                if (this._knownApps.indexOf(id) < 0) {//unknown app
+                    if (!this._newInstance) {
                         app.newAppShouldHighlight = true;
                     }
-                    this.#knownApps.push(id);
+                    this._knownApps.push(id);
                 }
             } else if (nextType === CMenu.TreeItemType.DIRECTORY) {
                 const subDir = iter.get_directory();
                 if (!subDir.get_is_nodisplay()) {
-                    foundApps = foundApps.concat(this.#loadDirectory(subDir));
+                    foundApps = foundApps.concat(this._loadDirectory(subDir));
                 }
             }
         }
@@ -1982,11 +1981,11 @@ class Apps {//This obj provides the .app objects for all the applications catego
     }
 
     getDirs() {
-        if (this.#appsNeedRefresh) {
-            this.#initAppCategories();
+        if (this._appsNeedRefresh) {
+            this._initAppCategories();
         }
 
-        return this.#dirs;
+        return this._dirs;
     }
 
     dirHasNewApp(dirId) {
@@ -1996,11 +1995,11 @@ class Apps {//This obj provides the .app objects for all the applications catego
     }
 
     listApplications(categoryMenuId) {
-        if (this.#appsNeedRefresh) {
-            this.#initAppCategories();
+        if (this._appsNeedRefresh) {
+            this._initAppCategories();
         }
 
-        return this.#appsByCategory[categoryMenuId];
+        return this._appsByCategory[categoryMenuId];
     }
 
     searchApplications(pattern) {
@@ -2019,17 +2018,15 @@ class Apps {//This obj provides the .app objects for all the applications catego
             }
             id = id.replace('cinnamon-settings-', '');
 
-            const match1 = searchStr(pattern, app.name);
-            const match2 = searchStr(pattern, app.description);
-            match2.score *= 0.95; //slightly lower priority for description match
-            const match3 = searchStr(pattern, keywords);
-            match3.score *= 0.8; //lower priority for keyword match
-            const match4 = searchStr(pattern, id);
-            const bestMatchScore = Math.max(match1.score, match2.score, match3.score, match4.score);
+            const nameScore = searchStr(pattern, app.name);
+            let desScore = searchStr(pattern, app.description);
+            desScore *= 0.95; //slightly lower priority for description match
+            let keywordScore = searchStr(pattern, keywords);
+            keywordScore *= 0.8; //lower priority for keyword match
+            const idScore = searchStr(pattern, id);
+            const bestMatchScore = Math.max(nameScore, desScore, keywordScore, idScore);
             if (bestMatchScore > SEARCH_THRESHOLD) {
                 app.score = bestMatchScore;
-                app.nameWithSearchMarkup = match1.result;
-                app.descriptionWithSearchMarkup = match2.result;
                 res.push(app);
             }
         });
