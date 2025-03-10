@@ -7,7 +7,7 @@ _Version: 5.5.1 (updated 6/3/25)_
 Cinnamenu is a full featured alternative to the standard Cinnamon menu with grid layout and customisation options.
 
 
-### Installation
+### Installation or Updating
 ```
 curl -sSLf https://github.com/fredcw/Cinnamenu/raw/main/install.sh | bash
 ```
