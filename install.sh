@@ -54,16 +54,9 @@ if [[ -f "$LOCAL_METADATA" ]]; then
             exit 0
             ;;
     esac
-    echo "Newer version will now be installed. Continue? (y/n)"
+    echo "Updating Cinnamenu."
 else
-	echo "Cinnamenu not installed. Install now? (y/n)"
-fi
-
-read -r response
-if [[ "$response" != "y" && "$response" != "Y" ]]; then
-    echo "Installation cancelled."
-    rm "$REMOTE_METADATA"
-    exit 0
+	echo "Installing Cinnamenu."
 fi
 
 # Create temp directory and download the ZIP file
@@ -71,7 +64,7 @@ if [[ -d "$TEMP_DIR" ]]; then
     rm -rf "$TEMP_DIR"
 fi
 
-echo "Downloading new version..."
+echo "Downloading..."
 mkdir -p "$TEMP_DIR"
 wget -q "$DOWNLOAD_URL" -O "$TEMP_DIR/cinnamenu.zip"
 unzip -q "$TEMP_DIR/cinnamenu.zip" -d "$TEMP_DIR"
