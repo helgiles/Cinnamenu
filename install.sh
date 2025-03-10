@@ -1,18 +1,16 @@
 #!/bin/bash
 
-# Define local and remote file locations
 LOCAL_METADATA="$HOME/.local/share/cinnamon/applets/Cinnamenu@json/metadata.json"
 GITHUB_METADATA="https://raw.githubusercontent.com/fredcw/Cinnamenu/refs/heads/main/Cinnamenu%40json/metadata.json"
 DOWNLOAD_URL="https://github.com/fredcw/Cinnamenu/archive/refs/heads/main.zip"
 TEMP_DIR="/tmp/cinnamenu_update"
 TARGET_DIR="$HOME/.local/share/cinnamon/applets/Cinnamenu@json"
 
-# Function to extract version number from metadata.json
+# Extract version number from metadata.json
 extract_version() {
     grep -oP '"version":\s*"\K[^"]+' "$1"
 }
 
-# Function to compare versions
 version_compare() {
     local IFS=.
     local i v1=($1) v2=($2)
@@ -59,17 +57,18 @@ else
 	echo "Installing Cinnamenu."
 fi
 
-# Create temp directory and download the ZIP file
+# Create temp directory
 if [[ -d "$TEMP_DIR" ]]; then
     rm -rf "$TEMP_DIR"
 fi
-
-echo "Downloading..."
 mkdir -p "$TEMP_DIR"
+
+# Download the ZIP file
+echo "Downloading..."
 wget -q "$DOWNLOAD_URL" -O "$TEMP_DIR/cinnamenu.zip"
 unzip -q "$TEMP_DIR/cinnamenu.zip" -d "$TEMP_DIR"
 
-# Replace the existing directory with the new one
+# Copy the files
 echo "Installing..."
 rm -rf "$TARGET_DIR"
 mv "$TEMP_DIR/Cinnamenu-main/Cinnamenu@json" "$TARGET_DIR"
