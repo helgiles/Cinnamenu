@@ -20,31 +20,6 @@ const {
 const ApplicationsViewMode = Object.freeze({LIST: 0, GRID: 1});
 const DescriptionPlacement = Object.freeze({TOOLTIP: 0, UNDER: 1, NONE: 2});
 
-function listp(obj, indent = 0) {
-    if (typeof obj !== "object" || !obj) {
-        return obj;
-    }
-
-    let out = " ".repeat(indent) + "{\n";
-    for (let key in obj) {
-        if (!Object.hasOwn(obj, key)) {
-            out += ">";
-        }
-        try {
-            if (typeof obj[key] === "object") {
-                out += listp(obj[key], indent + 2); 
-            } else {
-                out += " ".repeat(indent + 2)
-                out += key + ": " + obj[key] + "\n";
-            }
-        } catch {
-            out += "[error]\n";
-        }
-    }
-    out += " ".repeat(indent) + "}\n";
-    return out;
-}
-
 class AppButton {
     constructor(appThis, app) {
         this.appThis = appThis;
@@ -101,7 +76,7 @@ class AppButton {
 
         //-------------actor---------------------
         this.actor = new St.BoxLayout({
-            vertical: true,
+            vertical: !isListView,
             reactive: true,
             accessible_role: Atk.Role.MENU_ITEM
         });
