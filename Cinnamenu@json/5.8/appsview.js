@@ -489,7 +489,7 @@ class AppsView {
 
     populate_init(headerText = null) {
         this.applicationsListBox.hide();//hide while populating for performance.
-        this.applicationsGridBox.hide();//
+        //this.applicationsGridBox.hide();//gridBox is slower when hidden!
         this.clearApps();
         this.applicationsScrollBox.vscroll.adjustment.set_value(0);//scroll to top
 
