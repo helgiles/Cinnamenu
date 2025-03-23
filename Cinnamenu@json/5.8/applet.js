@@ -1178,25 +1178,13 @@ class CinnamenuApplet extends TextIconApplet {
         //=======search providers==========
         //---calculator---
         let calculatorResult = null;
-        const replacefn = (match) => {//Replace eg. "sqrt" with "Math.sqrt"
-            if (['E','LN10','LN2','LOG10E','LOG2E','PI','SQRT1_2','SQRT2','PI','abs',
-                'acos','acosh','asin','asinh','atan','atanh','cbrt','ceil','clz32','cos',
-                'cosh','exp','expm1','floor','fround','hypot','imul','log','log10','log1p',
-                'log2','max','min','pow','random','round','sign','sin','sinh','sqrt',
-                'tan','tanh','trunc'].includes(match)) {
-                return 'Math.' + match;
-            } else {
-                return match;
-            }
-        };
         let ans = null;
-        const exp = pattern_raw.replace(/([a-zA-Z0-9_]+)/g, replacefn);
+        const exp = pattern_raw.replace(/([a-zA-Z][a-zA-Z0-9_]*)/g, (match) => `Math.${match}`);
         
         try {
-            ans = eval(exp);
+            ans = eval?.(`"use strict"; ${exp}`);
         } catch(e) {
-            const r = /[\(\)\+=/\*\.;,]/
-            const probablyMath = r.test(exp);
+            const probablyMath = /[\(\)\+=/\*]/.test(exp);
             if (probablyMath) {
                 calculatorResult = _("Calculator: ") + e.message;
             }
@@ -1491,7 +1479,7 @@ class CinnamenuApplet extends TextIconApplet {
                             }//end if
 
                             if (FILE_SEARCH_DEBUG) {
-                                log ("todo: " + foldersToDo.length + " done: " + foldersSearched + " time: " + (Date.now() - timer) + " : total " + (Date.now() - total_timer));
+                                log("todo: " + foldersToDo.length + " done: " + foldersSearched + " time: " + (Date.now() - timer) + " : total " + (Date.now() - total_timer));
                             }
                             //update display of results at intervals or when search completed
                             if (foldersToDo.length === 0 || Date.now() - lastUpdateTime > updateInterval) {

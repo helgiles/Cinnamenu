@@ -287,7 +287,7 @@ class ContextMenu {
                         file.copy( destFile, 0, null, null);
                         changeModeGFile(destFile, 755);
                     } catch(e) {
-                        global.logError('Cinnamenu: Error creating desktop file', e);
+                        global.logError('Cinnamenu: Error creating desktop file. ' + e.message);
                     }
                     this.close();
                 }

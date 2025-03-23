@@ -303,7 +303,7 @@ const getWebBookmarksAsync = function() {
                                                 1 : (a.name.toUpperCase() < b.name.toUpperCase()) ? -1 : 0;  });
             resolve(bookmarks);
         }).catch( e => {
-            global.logError(e.message, e.stack);
+            global.logError(e);
             resolve([]);
         });
     });
