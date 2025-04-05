@@ -197,7 +197,7 @@ msgid "Flags"
 msgstr ""
 
 msgid "Quit"
-msgstr "Porzucić"
+msgstr "Wyłącz"
 
 msgid "Shutdown the computer"
 msgstr "Wyłącz komputer"
