@@ -346,8 +346,7 @@ class AppButton {
                 this._setNewAppHighlightClass();
             }
             this.appThis.recentApps.add(this.app.id);
-            const command = 'gksu ' + this.app.get_app_info().get_executable();
-            Util.spawnCommandLine(command);
+            Util.spawn([__meta.path + '/rar.sh', this.app.get_app_info().get_executable()]);
             this.appThis.menu.close();
         } 
     }
