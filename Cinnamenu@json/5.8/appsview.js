@@ -388,13 +388,15 @@ class Subheading {
         });
         const subheadingStyleClass =
                 clickAction?'menu-applications-subheading-clickable':'menu-applications-subheading';
-        this.subheadingBox = new St.BoxLayout({ style_class: subheadingStyleClass });
+        this.subheadingBox = new St.BoxLayout({ style_class: subheadingStyleClass, reactive: true });
         this.subheadingBox.add(this.subheading, {});
 
         if (this.clickAction) {
             this.signals.connect(this.subheading, 'button-press-event', (...args) =>
                                                                 this._handleButtonPress(...args));
         }
+        this.signals.connect(this.subheadingBox, 'enter-event', this.handleEnter.bind(this));
+        this.signals.connect(this.subheadingBox, 'leave-event', this.handleLeave.bind(this));
     }
 
     _handleButtonPress(actor, e) {
@@ -411,6 +413,33 @@ class Subheading {
         }
         return Clutter.EVENT_PROPAGATE;
     }
+
+    handleEnter(actor, event) {
+        if (this.appThis.display.contextMenu.isOpen || !this.clickAction) {
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        if (event) {//mouse
+            this.appThis.display.clearFocusedActors();
+        }
+
+        this.subheadingBox.add_style_pseudo_class('hover');
+
+        return Clutter.EVENT_STOP;
+    }
+
+    handleLeave(actor, event) {
+        if (this.appThis.display.contextMenu.isOpen || !this.clickAction) {
+            return Clutter.EVENT_PROPAGATE;
+        }
+        if (this.subheadingBox.has_style_pseudo_class('hover')) {
+            this.subheadingBox.remove_style_pseudo_class('hover');
+        }
+        hideTooltipIfVisible();
+
+        return Clutter.EVENT_STOP;
+    }
+
 
     destroy(){
         this.signals.disconnectAllSignals();
@@ -443,8 +472,6 @@ class AppsView {
             style_class: 'menu-applications-inner-box',
             vertical: true
         });
-        this.applicationsBoxWrapper.add_style_class_name(
-                                            'menu-applications-box'); //this is to support old themes
 
         this.applicationsBoxWrapper.add(this.headerText, { x_fill: false, x_align: St.Align.MIDDLE });
         this.applicationsBoxWrapper.add(this.applicationsGridBox, {});

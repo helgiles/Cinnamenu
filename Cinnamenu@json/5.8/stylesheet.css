@@ -1,14 +1,18 @@
-/*css selectors used by gridmenu
-┌──.menu-background .gridmenu .gridmenu-sidebar-top .gridmenu-sidebar-bottom .gridmenu-sidebar-left .gridmenu-sidebar-right──────
+/*css selectors used by cinnamenu
+┌──.menu-background .gridmenu .sidebar-top .sidebar-bottom .sidebar-left .sidebar-right──────
 │┌──.menu-applications-outer-box .menu-applications-box──────────────────────────────────────────────────────────────────────────
-│|┌──.menu-favorites-box─────────────────┐┌──.menu-categories-scrollbox .vfade──┐┌──.menu-applications-scrollbox .vfade───────────
-│││┌──.menu-favorites-scrollbox .vfade──┐││┌──.menu-categories-box─────────────┐││┌──.menu-applications-inner-box .menu-applications-box──
-││││                                    ││││                                   ││││┌──.menu-applications-header-text───┐
-││││                                    ││││                                   ││││└───────────────────────────────────┘
-││││                                    ││││                                   ││││┌──.menu-applications-grid-box (not list view)──┐
-││││                                    ││││                                   ││││└───────────────────────────────────
+││┌──.gridmenu-middle-pane───────────────────────────────────────────────────────────────────────────────────────────
+│││┌──.gridmenu-sidebar-box*─────────────────┐┌──.menu-categories-scrollbox .vfade──┐┌──.menu-applications-scrollbox .vfade───────
+││││┌──.gridmenu-sidebar-scrollbox .vfade──┐││┌──.menu-categories-box─────────────┐││┌──.menu-applications-inner-box──────────
+│││││                                      ││││                                   ││││┌──.menu-applications-header-text───┐
+│││││                                      ││││                                   ││││└───────────────────────────────────┘
+││││└───────                               ││││                                   ││││┌──.menu-applications-grid-box────────┐
+│││└───────                                ││││                                   ││││└─────────────────────────────────────┘
+││└──────────────────
 ││┌──.menu-search-box─────────
 │││┌──#menu-search-entry──────────
+
+.gridmenu-sidebar-box may be swapped for .menu-favorites-box as user option
 */
 
 .gridmenu .menu-categories-box {
@@ -23,11 +27,12 @@
 
 .menu-category-button:highlighted, /*Used to highlight category containing newly installed apps.*/
 .menu-category-button-selected:highlighted {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .gridmenu .menu-applications-inner-box {
-  padding: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 .menu-applications-grid-box {
@@ -49,16 +54,40 @@
 
 .menu-applications-subheading-clickable { /*emoji categories*/
     font-size: 100%;
+    padding: 0.25em;
+}
+
+.menu-applications-subheading-clickable:hover {
+  background-color: rgba(128,128,128,0.2);
+  border-radius: 4px;
 }
 
 .menu-applications-grid-box .menu-application-button,
 .menu-applications-grid-box .menu-application-button-selected {
-    padding: 10px 2px;
+  padding: 10px 2px;
 }
 
 .menu-application-button:highlighted, /*Used to highlight newly installed apps in list or grid view.*/
 .menu-application-button-selected:highlighted {
     font-weight: bold;
+}
+
+.menu-applications-grid-box .menu-application-button-label,
+.menu-applications-grid-box .menu-application-button-label:ltr,
+.menu-applications-grid-box .menu-application-button-label:rtl {
+  text-align: center;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.menu-application-button:highlighted, /*Used to highlight newly installed apps in list or grid view.*/
+.menu-application-button-selected:highlighted {
+    font-weight: bold;
+}
+
+.gridmenu .menu-categories-box {
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .gridmenu .menu-search-box, .gridmenu .menu-search-box:ltr, .gridmenu .menu-search-box:rtl {

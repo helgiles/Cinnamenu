@@ -33,7 +33,10 @@ const REMEMBER_RECENT_KEY = 'remember-recent-files';
 const SEARCH_THRESHOLD = 0.45;
 const SidebarPlacement = Object.freeze({TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3});
 
-/*This graph shows the classes in which other classes are instantiated.
+/* This graph shows the classes in which other classes are instantiated and how they are
+ * acessed. e.g. to call the update() method in categoriesView from contextMenu class use:
+ * this.appThis.display.categoriesView.update()
+
                                         ┌── class AppsView ───────┬── class AppButton
                                         │                         └── class Subheading
                                         │
@@ -68,6 +71,7 @@ class CinnamenuApplet extends TextIconApplet {
         this.privacy_settings = new Gio.Settings({schema_id: 'org.cinnamon.desktop.privacy'});
         this.appFavorites = getAppFavorites();
         this.currentCategory = 'all';
+        this.calculatorHistory = [];
         this.recentManagerDefault = Gtk.RecentManager.get_default();
         this.orientation = orientation;
         this.menuManager = new PopupMenuManager(this);
@@ -479,7 +483,9 @@ class CinnamenuApplet extends TextIconApplet {
             openOnCategory = 'places';
         }
 
-        this.display.updateMenuSize();
+        if (!this.resizer._size_restricted) {
+            this.display.updateMenuSize();
+        }
         this.setActiveCategory(openOnCategory);
 
         //Show panel when auto hide is on.
@@ -1096,6 +1102,7 @@ class CinnamenuApplet extends TextIconApplet {
         const PREFIX_USED = BOOKMARKS_PREFIX || HISTORY_PREFIX || EMOJI_PREFIX || FILE_PREFIX;
 
         //======Begin search===========
+        let calculatorMode = false;
         let applicationResults = [];
         let fileResults = [];
         let otherResults = [];
@@ -1150,6 +1157,12 @@ class CinnamenuApplet extends TextIconApplet {
             
             // Display results
             this.display.appsView.populate_init(calculatorResult);
+            if (calculatorMode) {
+                this.calculatorHistory.forEach(result => {
+                    this.display.appsView.populate_add([], `${result.sum} = ${result.result}`,
+                                        () => this.display.searchView.searchEntry.set_text(result.sum));
+                });
+            }
             if (applicationResults.length > 0) {
                 this.display.appsView.populate_add(applicationResults, _('Applications'));
             }
@@ -1183,15 +1196,20 @@ class CinnamenuApplet extends TextIconApplet {
         
         try {
             ans = eval?.(`"use strict"; ${exp}`);
+            if (Number.isNaN(ans)) {
+                calculatorResult = _("Calculator: ") + ans;
+                calculatorMode = true;
+            }
         } catch(e) {
             const probablyMath = /[\(\)\+=/\*]/.test(exp);
             if (probablyMath) {
                 calculatorResult = _("Calculator: ") + e.message;
+                calculatorMode = true;
             }
         }
 
-        if ((typeof ans === 'number' || typeof ans === 'boolean' || typeof ans === 'bigint')
-                                                                    && ans != pattern_raw ) {
+        if (((typeof ans === 'number' && !Number.isNaN(ans)) || typeof ans === 'boolean' ||
+                                            typeof ans === 'bigint') && ans != pattern_raw ) {
             
             let ans_str = ans.toString();
             //remove rounding error
@@ -1224,6 +1242,19 @@ class CinnamenuApplet extends TextIconApplet {
                 }
             });
             calculatorResult = pattern_raw + " = " + ans_str;
+            const sumSignature = pattern_raw.replace(/[\d\.]+/g, 'd').replace(/\s+/g, '');
+            const histItem = {
+                sum: pattern_raw,
+                result: ans_str, 
+                signature: sumSignature
+            };
+            if (this.calculatorHistory.length > 0 && this.calculatorHistory[this.calculatorHistory.length -1].signature === sumSignature) {
+                this.calculatorHistory[this.calculatorHistory.length -1] = histItem;
+            } else {
+                this.calculatorHistory.push(histItem);
+            }
+            if (this.calculatorHistory.length > 18) this.calculatorHistory.shift();
+            calculatorMode = true;
         }
 
         //---web search option and search suggestions---
