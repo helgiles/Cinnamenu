@@ -1,10 +1,10 @@
 #!/bin/bash
 
-LOCAL_METADATA="$HOME/.local/share/cinnamon/applets/Cinnamenu@json/metadata.json"
+LOCAL_METADATA="${XDG_DATA_HOME:-$HOME/.local/share}/cinnamon/applets/Cinnamenu@json/metadata.json"
 GITHUB_METADATA="https://raw.githubusercontent.com/fredcw/Cinnamenu/refs/heads/main/Cinnamenu%40json/metadata.json"
 DOWNLOAD_URL="https://github.com/fredcw/Cinnamenu/archive/refs/heads/main.zip"
 TEMP_DIR="/tmp/cinnamenu_update"
-TARGET_DIR="$HOME/.local/share/cinnamon/applets/Cinnamenu@json"
+TARGET_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/cinnamon/applets/Cinnamenu@json"
 
 # Extract version number from metadata.json
 extract_version() {
