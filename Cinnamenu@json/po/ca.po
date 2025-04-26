@@ -742,12 +742,12 @@ msgid ""
 "Firefox, Chromium, Opera, Vivaldi, Brave)\n"
 "Note: To search Firefox bookmarks you will need to install package gir1.2-"
 "gda-5.0 (Debian based distributions inc. Ubuntu & Linux Mint) or package "
-"libgda (Arch based distributions) and restart your computer."
+"libgda6 (Arch based distributions) and restart your computer."
 msgstr ""
 "Mentre es cerca, busca també als marcadors del navegador (Chrome, Firefox, "
 "Chromium, Opera, Vivaldi, Brave)\n"
 "Nota: La cerca als marcadors de firefox necessita tenir el paquet gir1.2-"
-"gda-5.0 (Debian, Ubuntu, Mint) o el paquet libgda (Arch) instal·lat."
+"gda-5.0 (Debian, Ubuntu, Mint) o el paquet libgda6 (Arch) instal·lat."
 
 #. 5.8
 #. 4.0

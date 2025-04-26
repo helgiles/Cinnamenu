@@ -306,5 +306,6 @@ module.exports = {
     showTooltip,
     hideTooltipIfVisible,
     searchStr,
+    getChromiumProfileDirs,
     scrollToButton
 };
