@@ -110,18 +110,23 @@ const readFirefoxBookmarks = function(appInfo, profileDir) {
             });
         }
     } catch(e) {
-        log("Cinnamenu: error reading firefox bookmarks file: " + e.message);
+        log("Cinnamenu: error reading firefox/librewolf bookmarks file: " + e.message);
     }
     return bookmarks;
 };
 
-function readFirefoxProfiles() {
+function readFirefoxProfiles(browser) {
     if (!Gda) return [];
 
     let profilesFile, profileDir, bookmarksFile;
-    let foundApps = Cinnamon.AppSystem.get_default().lookup_desktop_wmclass('firefox');
+    let foundApps = Cinnamon.AppSystem.get_default().lookup_desktop_wmclass(browser);
     let appInfo = foundApps.get_app_info();
-    let firefoxDir = GLib.build_filenamev([GLib.get_home_dir(), '.mozilla', 'firefox']);
+    let firefoxDir;
+    if (browser === 'firefox') {
+        firefoxDir = GLib.build_filenamev([GLib.get_home_dir(), '.mozilla', 'firefox']);
+    } else { //librewolf
+        firefoxDir = GLib.build_filenamev([GLib.get_home_dir(), '.librewolf']);
+    }
     if (!foundApps || foundApps.length === 0) {
         return [];
     }
@@ -153,7 +158,7 @@ function readFirefoxProfiles() {
             continue;
         }
 
-        if (profileName === 'default' || profileName === 'default-release') {
+        if (['default','default-release', 'default-default'].includes(profileName)) {
             if (relative) {
                 profileDir = GLib.build_filenamev([firefoxDir, path]);
             } else {
@@ -273,11 +278,13 @@ const getWebBookmarksAsync = function() {
 
             promises.push(readChromiumBookmarksFile(path, appInfo));
         });
+        
         Promise.all(promises).then((results) => {
             bookmarks = [];
             results.forEach( result => bookmarks = bookmarks.concat(result));
 
-            bookmarks = bookmarks.concat(readFirefoxProfiles());
+            bookmarks = bookmarks.concat(readFirefoxProfiles('firefox'));
+            bookmarks = bookmarks.concat(readFirefoxProfiles('librewolf'));
 
             bookmarks.forEach( bookmark => {
                 if (!bookmark.icon_filename){

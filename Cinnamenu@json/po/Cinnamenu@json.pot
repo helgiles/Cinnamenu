@@ -839,7 +839,7 @@ msgstr ""
 #. 5.8->settings-schema.json->enable-web-history-search->tooltip
 msgid ""
 "When searching, also search my browser's history (Google Chrome, Chromium, Opera, Vivaldi, Brave)\n"
-"Note: Firefox history is not currently supported."
+"Note: Firefox/LibreWolf history is not currently supported."
 msgstr ""
 
 #. 4.0->settings-schema.json->enable-web-bookmarks-search->description
@@ -850,8 +850,8 @@ msgstr ""
 #. 4.0->settings-schema.json->enable-web-bookmarks-search->tooltip
 #. 5.8->settings-schema.json->enable-web-bookmarks-search->tooltip
 msgid ""
-"When searching, also search my browser's web bookmarks (Google Chrome, Firefox, Chromium, Opera, Vivaldi, Brave)\n"
-"Note: To search Firefox bookmarks you will need to install package gir1.2-gda-5.0 (Debian based distributions inc. Ubuntu & Linux Mint) or package libgda6 (Arch based distributions) and restart your computer."
+"When searching, also search my browser's web bookmarks (Google Chrome, Firefox, Chromium, Opera, Vivaldi, Brave, LibreWolf)\n"
+"Note: To search Firefox/LibreWolf bookmarks you will need to install package gir1.2-gda-5.0 (Debian based distributions inc. Ubuntu & Linux Mint) or package libgda6 (Arch based distributions) and restart your computer."
 msgstr ""
 
 #. 4.0->settings-schema.json->enable-wikipedia-search->description
