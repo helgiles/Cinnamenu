@@ -54,16 +54,7 @@ CinnamenuApplet ──┼                     ├── class ContextMenu ──
                   └── class RecentApps
 
 */
-function safeStringify(obj) {
-    const seen = new WeakSet();
-    return JSON.stringify(obj, (key, value) => {
-        if (typeof value === "object" && value !== null) {
-            if (seen.has(value)) return "[Circular]"; // Mark circular references
-            seen.add(value);
-        }
-        return value;
-    }, 2);
-}
+
 class CinnamenuApplet extends TextIconApplet {
     constructor(metadata, orientation, panel_height, instance_id) {
         super(orientation, panel_height, instance_id);
@@ -449,10 +440,10 @@ class CinnamenuApplet extends TextIconApplet {
 
     _onOpenStateToggled(menu, open) {
         if (global.settings.get_boolean('panel-edit-mode')) {
-            return false;
+            return;
         }
         if (!open) {
-            return true; // this._onMenuClosed() is called on 'menu-animated-closed' signal to handle closing.
+            return; // this._onMenuClosed() is called on 'menu-animated-closed' signal to handle closing.
         }
 
         if (this.openMenuTimeoutId) {
@@ -505,7 +496,7 @@ class CinnamenuApplet extends TextIconApplet {
             this.display.appsView.focusFirstItem();
         }
 
-        return true;
+        return;
     }
 
     _onMenuClosed() {
@@ -810,14 +801,6 @@ class CinnamenuApplet extends TextIconApplet {
                 categoryButtons[focusedCategoryIndex].selectCategory();
             }
             return Clutter.EVENT_STOP;
-        case symbol === Clutter.unicode_to_keysym("p".charCodeAt(0)) && ctrlKey:
-            if (focusedAppItemExists && appButtons[focusedAppItemIndex].app.isApplication) {
-                const desktop_file_path = appButtons[focusedAppItemIndex].app.desktop_file_path;
-                Util.spawn(['cinnamon-desktop-editor', '-mlauncher', '-o' + desktop_file_path]);
-                this.menu.close();
-                return Clutter.EVENT_STOP;
-            }
-            return Clutter.EVENT_PROPAGATE
         case symbol === Clutter.unicode_to_keysym("d".charCodeAt(0)) && ctrlKey:
             if (focusedAppItemExists && appButtons[focusedAppItemIndex].app.isApplication) {
                 const desktop_file_path = appButtons[focusedAppItemIndex].app.desktop_file_path;

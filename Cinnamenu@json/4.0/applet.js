@@ -33,7 +33,10 @@ const REMEMBER_RECENT_KEY = 'remember-recent-files';
 const SEARCH_THRESHOLD = 0.45;
 const SidebarPlacement = Object.freeze({TOP: 0, BOTTOM: 1, LEFT: 2, RIGHT: 3});
 
-/*This graph shows the classes in which other classes are instantiated.
+/* This graph shows the classes in which other classes are instantiated and how they are
+ * acessed. e.g. to call the update() method in categoriesView from contextMenu class use:
+ * this.appThis.display.categoriesView.update()
+
                                         ┌── class AppsView ───────┬── class AppButton
                                         │                         └── class Subheading
                                         │
@@ -80,11 +83,13 @@ class CinnamenuApplet extends TextIconApplet {
         this._applet_context_menu.addMenuItem(searchFilesMenuItem);
         searchFilesMenuItem.connect('activate', () => {
                         Util.spawnCommandLine(__meta.path + '/search.py ' + GLib.get_home_dir()); });
-        this.resizer = new PopupResizeHandler(this.menu.actor,
-                                              () => this.orientation,
-                                              (w,h) => this.display.onMenuResized(w,h),
-                                              () => this.settings.customMenuWidth * global.ui_scale,
-                                              () => this.settings.customMenuHeight * global.ui_scale);
+        this.resizer = new PopupResizeHandler(
+            this.menu.actor,
+            () => this.orientation,
+            (w,h) => this.display.onMenuResized(w,h),
+            () => this.settings.customMenuWidth * global.ui_scale,
+            () => this.settings.customMenuHeight * global.ui_scale
+        );
         this.signals.connect(this.privacy_settings, 'changed::' + REMEMBER_RECENT_KEY,
                                                         () => this._onEnableRecentsChange());
 
@@ -112,20 +117,23 @@ class CinnamenuApplet extends TextIconApplet {
         this.iconTheme = Gtk.IconTheme.get_default();
         this.signals.connect(this.iconTheme, 'changed', () => this._updateIconAndLabel());
         this.signals.connect(this.appSystem, 'installed-changed', () => {
-                                                    this.apps.installedChanged();
-                                                    refreshDisplay();
-                                                });
+            this.apps.installedChanged();
+            refreshDisplay();
+        });
         this.signals.connect(this.appFavorites, 'changed', () => {
-                        if (this.display) {// Check if display is initialised
-                            this.display.sidebar.populate();
-                            this.display.updateMenuSize();
-                            if (this.currentCategory === 'favorite_apps' && !this.searchActive) {
-                                this.setActiveCategory(this.currentCategory);
-                            }
-                        } });
-        this.signals.connect(   this.menu,
-                                'open-state-changed',
-                                (...args) => this._onOpenStateToggled(...args));
+            if (this.display) {// Check if display is initialised
+                this.display.sidebar.populate();
+                this.display.updateMenuSize();
+                if (this.currentCategory === 'favorite_apps' && !this.searchActive) {
+                    this.setActiveCategory(this.currentCategory);
+                }
+            }
+        });
+        this.signals.connect(
+            this.menu,
+            'open-state-changed',
+            (...args) => this._onOpenStateToggled(...args)
+        );
         //this.signals.connect(global, 'scale-changed', () => refreshDisplay() );
         this.apps = new Apps(this.appSystem);
         //this.session = new SessionManager();
@@ -149,6 +157,7 @@ class CinnamenuApplet extends TextIconApplet {
                 }
             );
         };
+
         const updateActivateOnHover = () => {
             const openMenu = () => {
                 if (!this._applet_context_menu.isOpen) {
@@ -168,10 +177,10 @@ class CinnamenuApplet extends TextIconApplet {
                     }
                 });
                 this.signals.connect(this.actor, 'leave-event', () => {
-                                if (this.openMenuTimeoutId) {
-                                    clearTimeout(this.openMenuTimeoutId);
-                                    this.openMenuTimeoutId = null;
-                                }
+                    if (this.openMenuTimeoutId) {
+                        clearTimeout(this.openMenuTimeoutId);
+                        this.openMenuTimeoutId = null;
+                    }
                 });
             }
         };
@@ -715,7 +724,7 @@ class CinnamenuApplet extends TextIconApplet {
                 }
             }
         };
-        
+
         switch (true) {
         case (symbol === Clutter.KEY_KP_Enter || symbol === Clutter.KP_Enter ||
                                             symbol === Clutter.KEY_Return) && ctrlKey:
@@ -742,14 +751,6 @@ class CinnamenuApplet extends TextIconApplet {
                 categoryButtons[focusedCategoryIndex].selectCategory();
             }
             return Clutter.EVENT_STOP;
-        case symbol === Clutter.unicode_to_keysym("p".charCodeAt(0)) && ctrlKey:
-            if (focusedAppItemExists && appButtons[focusedAppItemIndex].app.isApplication) {
-                const desktop_file_path = appButtons[focusedAppItemIndex].app.desktop_file_path;
-                Util.spawn(['cinnamon-desktop-editor', '-mlauncher', '-o' + desktop_file_path]);
-                this.menu.close();
-                return Clutter.EVENT_STOP;
-            }
-            return Clutter.EVENT_PROPAGATE
         case symbol === Clutter.unicode_to_keysym("d".charCodeAt(0)) && ctrlKey:
             if (focusedAppItemExists && appButtons[focusedAppItemIndex].app.isApplication) {
                 const desktop_file_path = appButtons[focusedAppItemIndex].app.desktop_file_path;

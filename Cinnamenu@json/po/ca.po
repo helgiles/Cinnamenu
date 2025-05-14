@@ -6,20 +6,110 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: https://github.com/linuxmint/cinnamon-spices-applets/"
-"issues\n"
-"POT-Creation-Date: 2024-08-06 22:42-0400\n"
-"PO-Revision-Date: 2025-03-02 00:14+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-14 05:57+0100\n"
+"PO-Revision-Date: 2025-05-14 11:01+0100\n"
 "Last-Translator: Odyssey <odysseyhyd@gmail.com>\n"
 "Language-Team: \n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.6\n"
+
+msgid "Type to search..."
+msgstr "Escriu per a buscar..."
 
 msgid "Initializing"
 msgstr "Inicialitzant"
+
+msgid "No description available"
+msgstr "No hi ha una descripció disponible"
+
+msgid "All applications"
+msgstr "Totes les aplicacions"
+
+msgid "Places"
+msgstr "Llocs"
+
+msgid "Recent files"
+msgstr "Fitxers recents"
+
+msgid "Bookmarks"
+msgstr "Marcadors"
+
+msgid "Favorite apps"
+msgstr "Aplicacions preferides"
+
+msgid "gir1.2-gda-5.0 package required for Firefox and Midori bookmarks."
+msgstr ""
+"es necessita el paquet gir1.2-gda-5.0 per a marcadors de Firefox i Midori."
+
+msgid "Clear List"
+msgstr "Netejar llista"
+
+msgid "No recent files"
+msgstr "No hi ha fitxers recents"
+
+msgid "Account details"
+msgstr "Detalls del compte"
+
+msgid "Grid View"
+msgstr "Vista de quadrícula"
+
+msgid "List View"
+msgstr "Vista de llista"
+
+msgid "Switch to grid view"
+msgstr "Canviar a vista de quadrícula"
+
+msgid "Switch to list view"
+msgstr "Canviar a vista de llista"
+
+msgid "Lock screen"
+msgstr "Bloqueig de pantalla"
+
+msgid "Lock the screen"
+msgstr "Bloquejar la pantalla"
+
+msgid "Logout"
+msgstr "Desconnectar-se"
+
+msgid "Leave the session"
+msgstr "Tancar la sessió"
+
+msgid "Quit"
+msgstr "Sortir"
+
+msgid "Shutdown the computer"
+msgstr "Apagar l'ordinador"
+
+msgid "Run with NVIDIA GPU"
+msgstr "Executa amb GPU d'NVIDIA"
+
+msgid "Add to panel"
+msgstr "Afegeix al tauler"
+
+msgid "Add to desktop"
+msgstr "Afegeix a l'Escriptori"
+
+msgid "Remove from favorites"
+msgstr "Elimina dels preferits"
+
+msgid "Add to favorites"
+msgstr "Afegeix als preferits"
+
+msgid "Uninstall"
+msgstr "Desinstal·la"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Computer"
+msgstr "Ordinador"
+
+msgid "Browse network"
+msgstr "Navegar per xarxa"
 
 msgid "Find files..."
 msgstr "Buscar fitxers..."
@@ -48,11 +138,9 @@ msgstr "No hi ha elements recents"
 msgid "Settings"
 msgstr "Configuració"
 
-#: 5.8/applet.js:1127
-msgid "Files"
-msgstr "Fitxers"
+msgid "Applications and files"
+msgstr "Aplicacions i fitxers"
 
-#: 5.8/applet.js:1130 4.0/applet.js:1097
 msgid "Other search results"
 msgstr "Altres resultats de cerca"
 
@@ -68,14 +156,8 @@ msgstr "Emoji"
 msgid "Click to copy"
 msgstr "Clic per a copiar"
 
-msgid "Clear List"
-msgstr "Netejar llista"
-
 msgid "Trash"
 msgstr "Paperera"
-
-msgid "Computer"
-msgstr "Ordinador"
 
 msgid "Error while opening file:"
 msgstr "Error mentre s'obria el fitxer:"
@@ -83,20 +165,11 @@ msgstr "Error mentre s'obria el fitxer:"
 msgid "Too many entries - showing first 1000 entries only"
 msgstr "Massa resultats - es mostren només els 1000 primers"
 
-msgid "All applications"
-msgstr "Totes les aplicacions"
-
 msgid "Favorites"
 msgstr "Preferits"
 
-msgid "Places"
-msgstr "Llocs"
-
 msgid "Recent"
 msgstr "Recent"
-
-msgid "Favorite apps"
-msgstr "Aplicacions preferides"
 
 msgid "light skin tone"
 msgstr "to de pell clar"
@@ -131,26 +204,11 @@ msgstr "No mostris fitxers ocults"
 msgid "Show hidden files"
 msgstr "Mostra fitxers ocults"
 
-msgid "Run with NVIDIA GPU"
-msgstr "Executa amb GPU d'NVIDIA"
-
-msgid "Add to panel"
-msgstr "Afegeix al tauler"
-
-msgid "Add to desktop"
-msgstr "Afegeix a l'Escriptori"
-
-msgid "Remove from favorites"
-msgstr "Elimina dels preferits"
-
-msgid "Add to favorites"
-msgstr "Afegeix als preferits"
-
-msgid "Uninstall"
-msgstr "Desinstal·la"
-
 msgid "App Info"
 msgstr "Informació de l'aplicació"
+
+msgid "Properties"
+msgstr "Propietats"
 
 msgid "This file is no longer available"
 msgstr "Aquest fitxer ja no és disponible"
@@ -200,66 +258,32 @@ msgstr "Símbols"
 msgid "Flags"
 msgstr "Banderes"
 
-msgid "Quit"
-msgstr "Sortir"
+msgid "Files"
+msgstr "Fitxers"
 
-msgid "Shutdown the computer"
-msgstr "Apagar l'ordinador"
+msgid "Calculator: "
+msgstr "Calculadora: "
 
-msgid "Logout"
-msgstr "Desconnectar-se"
-
-msgid "Leave the session"
-msgstr "Tancar la sessió"
-
-msgid "Lock screen"
-msgstr "Bloqueig de pantalla"
-
-msgid "Lock the screen"
-msgstr "Bloquejar la pantalla"
-
-msgid "Type to search..."
-msgstr "Escriu per a buscar..."
-
-msgid "No description available"
-msgstr "No hi ha una descripció disponible"
-
-msgid "Recent files"
-msgstr "Fitxers recents"
-
-msgid "Bookmarks"
-msgstr "Marcadors"
-
-msgid "gir1.2-gda-5.0 package required for Firefox and Midori bookmarks."
+msgid ""
+"This menu item is not associated to any package. Do you want to remove it "
+"from the menu anyway?"
 msgstr ""
-"es necessita el paquet gir1.2-gda-5.0 per a marcadors de Firefox i Midori."
+"Aquest ítem del menú no està associat amb cap paquet. Vols eliminar-lo del "
+"menú igualment?"
 
-msgid "No recent files"
-msgstr "No hi ha fitxers recents"
+msgid "The following packages will be removed:"
+msgstr "Els següents paquets seran eliminats:"
 
-msgid "Account details"
-msgstr "Detalls del compte"
+msgid "Packages to be removed"
+msgstr "Paquets a eliminar"
 
-msgid "Grid View"
-msgstr "Vista de quadrícula"
+#, python-format
+msgid "Cannot remove package %s as it is required by other packages."
+msgstr "No es pot esborrar el paquet %s ja que és requerit per altres paquets."
 
-msgid "List View"
-msgstr "Vista de llista"
-
-msgid "Switch to grid view"
-msgstr "Canviar a vista de quadrícula"
-
-msgid "Switch to list view"
-msgstr "Canviar a vista de llista"
-
-msgid "Home"
-msgstr "Home"
-
-msgid "Browse network"
-msgstr "Navegar per xarxa"
-
-msgid "Applications and files"
-msgstr "Aplicacions i fitxers"
+#, python-format
+msgid "Package %s is a dependency of the following packages:"
+msgstr "El paquet %s és una dependència dels següents paquets:"
 
 msgid "Open"
 msgstr "Obrir"
@@ -312,27 +336,6 @@ msgstr "Ignorant"
 msgid " - directory already searched"
 msgstr " - directori ja buscat"
 
-msgid ""
-"This menu item is not associated to any package. Do you want to remove it "
-"from the menu anyway?"
-msgstr ""
-"Aquest ítem del menú no està associat amb cap paquet. Vols eliminar-lo del "
-"menú igualment?"
-
-msgid "The following packages will be removed:"
-msgstr "Els següents paquets seran eliminats:"
-
-msgid "Packages to be removed"
-msgstr "Paquets a eliminar"
-
-#, python-format
-msgid "Cannot remove package %s as it is required by other packages."
-msgstr "No es pot esborrar el paquet %s ja que és requerit per altres paquets."
-
-#, python-format
-msgid "Package %s is a dependency of the following packages:"
-msgstr "El paquet %s és una dependència dels següents paquets:"
-
 msgid "Cinnamenu"
 msgstr "Cinnamenu"
 
@@ -343,360 +346,280 @@ msgstr ""
 "Un menú flexible amb opcions de vista de quadrícula o llista, explorador de "
 "fitxers i cerca d'emojis."
 
-#. 5.8
-#. 5.8
-#. 3.2
-#. 3.2
-#. 4.0
-#. 4.0
-msgid "Layout"
-msgstr "Disposició"
-
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Behavior"
 msgstr "Comportament"
 
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Appearance"
 msgstr "Aparença"
 
-#. 5.8
-#. 5.8
-#. 4.0
-#. 4.0
-msgid "Tips"
-msgstr "Consells"
+msgid "Layout"
+msgstr "Disposició"
 
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Content"
-msgstr "Contingut"
+msgid "Search Providers"
+msgstr "Proveïdors de cerca"
 
-#. 5.8
-#. 5.8
-#. 3.2
-#. 3.2
-#. 4.0
-#. 4.0
+msgid "No search provider extensions found"
+msgstr "No s'han trobat extensions de proveïdors de cerca"
+
 msgid "Panel"
-msgstr "Panell"
+msgstr "Tauler"
 
-#. 5.8
-#. 5.8
-#. 3.2
-#. 3.2
-#. 4.0
-#. 4.0
 msgid "Menu"
 msgstr "Menú"
 
-#. 5.8
-#. 4.0
-msgid "Applications view mode"
-msgstr "Mode de vista d'aplicacions"
+msgid "Content"
+msgstr "Contingut"
 
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "List"
-msgstr "Llista"
+msgid "Recent files settings"
+msgstr "Configuració de fitxers recents"
 
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Grid"
-msgstr "Quadrícula"
-
-#. 5.8
-#. 4.0
-msgid "View applications as list or grid"
-msgstr "Veure aplicacions com a llista o quadrícula"
-
-#. 5.8
-#. 4.0
-msgid "Show sidebar"
-msgstr "Mostrar barra lateral"
-
-#. 5.8
-#. 4.0
-msgid "Show the sidebar in the menu"
-msgstr "Mostrar la barra lateral al menú"
-
-#. 5.8
-#. 4.0
-msgid "Sidebar location"
-msgstr "Ubicació de la barra lateral"
-
-#. 5.8
-#. 4.0
-msgid "Top"
-msgstr "A dalt"
-
-#. 5.8
-#. 4.0
-msgid "Bottom"
-msgstr "A baix"
-
-#. 5.8
-#. 4.0
-msgid "Left"
-msgstr "A l'esquerra"
-
-#. 5.8
-#. 4.0
-msgid "Right"
-msgstr "A la dreta"
-
-#. 5.8
-#. 4.0
-msgid "Choose where to show the sidebar"
-msgstr "Tria a on mostrar la barra lateral"
-
-#. 5.8
-#. 4.0
-msgid "Show favorites on sidebar"
-msgstr "Mostra preferits a la barra lateral"
-
-#. 5.8
-#. 5.8
-#. 5.8
-#. 4.0
-#. 4.0
-#. 4.0
-msgid "None"
-msgstr "Cap"
-
-#. 5.8
-#. 4.0
-msgid "Apps only"
-msgstr "Només aplicacions"
-
-#. 5.8
-#. 4.0
-msgid "Files only"
-msgstr "Només fitxers"
-
-#. 5.8
-#. 4.0
-msgid "Apps and files"
-msgstr "Aplicacions i fitxers"
-
-#. 5.8
-#. 4.0
-msgid "Show your favorite apps and file icons on the sidebar"
-msgstr "Mostra les aplicacions i icones preferides a la barra lateral"
-
-#. 5.8
-#. 4.0
-msgid "Application description placement"
-msgstr "Ubicació de la descripció de les aplicacions"
-
-#. 5.8
-#. 4.0
-msgid "Tooltips"
-msgstr "Sobreimpressionada"
-
-#. 5.8
-#. 4.0
-msgid "Under titles"
-msgstr "A sota dels títols"
-
-#. 5.8
-#. 4.0
-msgid "Choose where to show application descriptions"
-msgstr "Escull a on mostrar descripcions de les aplicacions"
-
-#. 5.8
-#. 4.0
-msgid "Show categories"
-msgstr "Mostra categories"
-
-#. 5.8
-#. 4.0
-msgid "Show list of application categories"
-msgstr "Mostra el llistat de categories d'aplicacions"
-
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Show bookmarks and places"
-msgstr "Mostra marcadors i llocs"
-
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Show bookmarks and places category in the menu"
-msgstr "Mostra la categoria de marcadors i llocs al menú"
-
-#. 5.8
-#. 4.0
-msgid "Show recent items"
-msgstr "Mostra elements recents"
-
-#. 5.8
-#. 4.0
-msgid "Show recent items category in the menu"
-msgstr "Mostra la categoria dels elements recents al menú"
-
-#. 5.8
-#. 4.0
-msgid "Show favorite apps category"
-msgstr "Mostra la categoria d'aplicacions preferides"
-
-#. 5.8
-#. 4.0
-msgid "Show your favorite apps category in the menu"
-msgstr "Mostra la categoria d'aplicacions preferides al menú"
-
-#. 5.8
-#. 4.0
-msgid "Show home folder"
-msgstr "Mostra el directori home"
-
-#. 5.8
-#. 4.0
-msgid "Show home folder category in the menu"
-msgstr "Mostra la categoria del directori home al menú"
-
-#. 5.8
-#. 4.0
-msgid "Show emoji category"
-msgstr "Mostra la categoria d'emojis"
-
-#. 5.8
-#. 4.0
-msgid "Show emoji category in the menu"
-msgstr "Mostra la categoria d'emojis al menú"
-
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Open the menu editor"
 msgstr "Obre l'editor del menú"
 
-#. 5.8
-#. 3.2
-#. 4.0
+msgid "Use a custom icon"
+msgstr "Utilitza una icona personalitzada"
+
+msgid "Use a custom icon in the panel"
+msgstr "Utilitza una icona personalitzada al tauler"
+
+msgid "Panel icon"
+msgstr "Icona del tauler"
+
+msgid "Panel text"
+msgstr "Text del tauler"
+
+msgid "Text to show beside the panel icon"
+msgstr "Text a mostrar al costat de la icona del tauler"
+
+msgid "Category icon size (pixels)"
+msgstr "Mida de la icona de categoria (píxels)"
+
+msgid "Applications list icon size (pixels)"
+msgstr "Mida de la icona de les aplicacions en vista de llista (píxels)"
+
+msgid "Applications grid icon size (pixels)"
+msgstr "Mida de la icona de les aplicacions en vista de quadrícula (píxels)"
+
 msgid "Keyboard shortcut to open and close the menu"
 msgstr "Drecera del teclat per a obrir i tancar el menú"
 
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Open menu on hover"
 msgstr "Obre el menú al passar el ratolí per sobre"
 
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Open the menu when I move my mouse over the panel icon"
 msgstr "Obre el menú quan mogui el ratolí a sobre de la icona del tauler"
 
-#. 5.8
-#. 3.2
-#. 3.2
-#. 4.0
 msgid "milliseconds"
 msgstr "mil·lisegons"
 
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Menu hover delay"
 msgstr "Endarreriment en mostrar el menú"
 
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Use menu animations"
 msgstr "Usa animacions del menú"
 
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Animate the menu on open and close"
 msgstr "Anima el menú en obrir-lo i tancar-lo"
 
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Activate categories on click"
 msgstr "Activa les categories en clicar-les"
 
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Activate categories on click instead of on hover"
 msgstr ""
 "Activa les categories en clicar-les en lloc de passar-hi el ratolí per sobre"
 
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Open menu on category:"
-msgstr "Obre el menú en la categoria:"
-
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Always open the menu with this category selected"
-msgstr "Obre el menú sempre amb aquesta categoria seleccionada"
-
-#. 5.8
-#. 4.0
-msgid "Last used category"
-msgstr "Última categoria utilitzada"
-
-#. 5.8
-#. 3.2
-#. 4.0
 msgid "Enable autoscrolling"
 msgstr "Activa auto-scrolling"
 
-#. 5.8
-#. 4.0
+msgid "Enable autoscrolling in application list"
+msgstr "Activa l'auto-scroll a la llista d'aplicacions"
+
+msgid "Show web bookmarks"
+msgstr "Mostra marcadors web"
+
+msgid ""
+"Show your browser's web bookmarks in the menu.\n"
+"Note: Install package gir1.2-gda-5.0 to read firefox bookmarks."
+msgstr ""
+"Mostra els teus marcadors web al menú.\n"
+"Nota: Instal·la el paquet gir1.2-gda-5.0 per a llegir marcadors de Firefox."
+
+msgid "Enable searching of open windows"
+msgstr "Activa la cerca en finestres obertes"
+
+msgid "Enable search providers"
+msgstr "Activa els proveïdors de cerca"
+
+msgid "Include search provider results in searches"
+msgstr "Inclou resultats dels proveïdors de cerca"
+
+msgid "Example Search Providers"
+msgstr "Exemple de proveïdors de cerca"
+
+msgid "Open menu on category:"
+msgstr "Obre el menú en la categoria:"
+
+msgid "List"
+msgstr "Llista"
+
+msgid "Grid"
+msgstr "Quadrícula"
+
+msgid "Always open the menu with this category selected"
+msgstr "Obre el menú sempre amb aquesta categoria seleccionada"
+
+msgid "columns"
+msgstr "columnes"
+
+msgid "Number of columns in apps grid"
+msgstr "Nombre de columnes de la quadrícula d'aplicacions"
+
+msgid "Show bookmarks and places"
+msgstr "Mostra marcadors i llocs"
+
+msgid "Show bookmarks and places category in the menu"
+msgstr "Mostra la categoria de marcadors i llocs al menú"
+
+msgid "Show application icons"
+msgstr "Mostra les icones de les aplicacions"
+
+msgid "Show category icons"
+msgstr "Mostra les icones de les categories"
+
+msgid "Show application descriptions under titles"
+msgstr "Mostra la descripció de les aplicacions sota el seu títol"
+
+msgid "Show tooltips"
+msgstr "Mostra tooltips"
+
+msgid "Tooltip delay"
+msgstr "Endarreriment al mostrar tooltips"
+
+msgid "Use a custom menu height"
+msgstr "Usa una alçada de menú personalitzada"
+
+msgid "Custom menu height (pixels)"
+msgstr "Alçada de menú personalitzada (píxels)"
+
+msgid "Tips"
+msgstr "Consells"
+
+msgid "Applications view mode"
+msgstr "Mode de vista d'aplicacions"
+
+msgid "View applications as list or grid"
+msgstr "Veure aplicacions com a llista o quadrícula"
+
+msgid "Show sidebar"
+msgstr "Mostrar barra lateral"
+
+msgid "Show the sidebar in the menu"
+msgstr "Mostrar la barra lateral al menú"
+
+msgid "Sidebar location"
+msgstr "Ubicació de la barra lateral"
+
+msgid "Top"
+msgstr "A dalt"
+
+msgid "Bottom"
+msgstr "A baix"
+
+msgid "Left"
+msgstr "A l'esquerra"
+
+msgid "Right"
+msgstr "A la dreta"
+
+msgid "Choose where to show the sidebar"
+msgstr "Tria a on mostrar la barra lateral"
+
+msgid "Show favorites on sidebar"
+msgstr "Mostra preferits a la barra lateral"
+
+msgid "None"
+msgstr "Cap"
+
+msgid "Apps only"
+msgstr "Només aplicacions"
+
+msgid "Files only"
+msgstr "Només fitxers"
+
+msgid "Apps and files"
+msgstr "Aplicacions i fitxers"
+
+msgid "Show your favorite apps and file icons on the sidebar"
+msgstr "Mostra les aplicacions i icones preferides a la barra lateral"
+
+msgid "Application description placement"
+msgstr "Ubicació de la descripció de les aplicacions"
+
+msgid "Tooltips"
+msgstr "Sobreimpressionada"
+
+msgid "Under titles"
+msgstr "A sota dels títols"
+
+msgid "Choose where to show application descriptions"
+msgstr "Escull a on mostrar descripcions de les aplicacions"
+
+msgid "Show categories"
+msgstr "Mostra categories"
+
+msgid "Show list of application categories"
+msgstr "Mostra el llistat de categories d'aplicacions"
+
+msgid "Show recent items"
+msgstr "Mostra elements recents"
+
+msgid "Show recent items category in the menu"
+msgstr "Mostra la categoria dels elements recents al menú"
+
+msgid "Show favorite apps category"
+msgstr "Mostra la categoria d'aplicacions preferides"
+
+msgid "Show your favorite apps category in the menu"
+msgstr "Mostra la categoria d'aplicacions preferides al menú"
+
+msgid "Show home folder"
+msgstr "Mostra el directori home"
+
+msgid "Show home folder category in the menu"
+msgstr "Mostra la categoria del directori home al menú"
+
+msgid "Show emoji category"
+msgstr "Mostra la categoria d'emojis"
+
+msgid "Show emoji category in the menu"
+msgstr "Mostra la categoria d'emojis al menú"
+
+msgid "Last used category"
+msgstr "Última categoria utilitzada"
+
 msgid "Autoscroll the application list on mouse hover"
 msgstr ""
 "Fes scroll automàtic de la llista d'aplicacions en passar-hi el ratolí per "
 "sobre"
 
-#. 5.8
-#. 4.0
 msgid "Show hidden files in folder view"
 msgstr "Mostra fitxers ocults en vista de carpetes"
 
-#. 5.8
-#. 4.0
 msgid "Emoji search"
 msgstr "Cerca d'emojis"
 
-#. 5.8
-#. 4.0
 msgid "Show emojis in search results"
 msgstr "Mostra emojis als resultats de la cerca"
 
-#. 5.8
-#. 4.0
 msgid "Web search option"
 msgstr "Busca a la web"
 
-#. 5.8
-#. 4.0
 msgid "Show an internet search option in search results"
 msgstr "Mostra una opció per a buscar a internet als resultats de la cerca"
 
-#. 5.8
-#. 4.0
 msgid "Web search suggestions"
 msgstr "Recomanacions de cerca web"
 
-#. 5.8
-#. 4.0
 msgid ""
 "With web search option, also show search suggestions. (Note: Search "
 "suggestions are provided by DuckDuckGo)"
@@ -704,23 +627,15 @@ msgstr ""
 "En l'opció de cerca web, mostra suggeriments. (Nota: Els suggeriments són "
 "proveïts per DuckDuckGo)"
 
-#. 5.8
-#. 4.0
 msgid "Search home folder"
 msgstr "Busca a la carpeta Home"
 
-#. 5.8
-#. 4.0
 msgid "When searching, also search my home folder for files"
 msgstr "Mentre es cerca, busca fitxers a la meva carpeta Home simultàniament"
 
-#. 5.8
-#. 4.0
 msgid "Web history search"
 msgstr "Història de cerca web"
 
-#. 5.8
-#. 4.0
 msgid ""
 "When searching, also search my browser's history (Google Chrome, Chromium, "
 "Opera, Vivaldi, Brave)\n"
@@ -728,46 +643,32 @@ msgid ""
 msgstr ""
 "Mentre es cerca, busca també a l'historial de navegació (Chrome, Chromium, "
 "Opera, Vivaldi, Brave)\n"
-"Nota: L'historial de navegador de Firefox no està suportat."
+"Nota: L'historial de navegador de Firefox/LibreWolf no està suportat."
 
-#. 5.8
-#. 4.0
 msgid "Web bookmarks search"
 msgstr "Busca marcadors web"
 
-#. 5.8
-#. 4.0
 msgid ""
 "When searching, also search my browser's web bookmarks (Google Chrome, "
 "Firefox, Chromium, Opera, Vivaldi, Brave, LibreWolf)\n"
-"Note: To search Firefox/LibreWolf bookmarks you will need to install package gir1.2-"
-"gda-5.0 (Debian based distributions inc. Ubuntu & Linux Mint) or package "
-"libgda6 (Arch based distributions) and restart your computer."
+"Note: To search Firefox/LibreWolf bookmarks you will need to install package "
+"gir1.2-gda-5.0 (Debian based distributions inc. Ubuntu & Linux Mint) or "
+"package libgda6 (Arch based distributions) and restart your computer."
 msgstr ""
 "Mentre es cerca, busca també als marcadors del navegador (Chrome, Firefox, "
-"Chromium, Opera, Vivaldi, Brave)\n"
+"Chromium, Opera, Vivaldi, Brave, LibreWolf)\n"
 "Nota: La cerca als marcadors de firefox necessita tenir el paquet gir1.2-"
 "gda-5.0 (Debian, Ubuntu, Mint) o el paquet libgda6 (Arch) instal·lat."
 
-#. 5.8
-#. 4.0
 msgid "Wikipedia search"
 msgstr "Busca a la viquipèdia"
 
-#. 5.8
-#. 4.0
 msgid "Show some Wikipedia results"
 msgstr "Mostra resultats de la viquipèdia"
 
-#. 5.8
-#. 5.8
-#. 4.0
-#. 4.0
 msgid "Wikipedia language"
 msgstr "Idioma de la viquipèdia"
 
-#. 5.8
-#. 4.0
 msgid ""
 "\n"
 "Note: Some search options can still be used even if you have not enabled "
@@ -780,113 +681,33 @@ msgstr ""
 "Nota: Algunes opcions de cerca poden ser usades encara que no estiguin "
 "activades per mitjà de l'ús d'un prefix de cerca.\n"
 "Per exemple: per a buscar un emoji, escriviu 'e heart' per a buscar emojis "
-"d'un cor. De la mateixa manera es poden utilitzar els prefixos "
-"'f' (fitxers), 'h' (historial web), 'b' (marcadors web).\n"
+"d'un cor. De la mateixa manera es poden utilitzar els prefixos 'f' "
+"(fitxers), 'h' (historial web), 'b' (marcadors web).\n"
 
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Use a custom icon"
-msgstr "Utilitza una icona personalitzada"
-
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Use a custom icon in the panel"
-msgstr "Utilitza una icona personalitzada al tauler"
-
-#. 5.8
-#. 5.8
-#. 3.2
-#. 3.2
-#. 4.0
-#. 4.0
-msgid "Panel icon"
-msgstr "Icona del tauler"
-
-#. 5.8
-#. 4.0
 msgid "Use a custom icon size"
 msgstr "Utilitza una mida d'icona personalitzada"
 
-#. 5.8
-#. 4.0
 msgid "Use a custom size for the panel icon"
 msgstr "Utilitza una mida d'icona personalitzada per al tauler"
 
-#. 5.8
-#. 4.0
 msgid "Panel icon size (pixels)"
 msgstr "Mida de la icona del tauler (píxels)"
 
-#. 5.8
-#. 4.0
 msgid "Choose a custom size for the panel icon"
 msgstr "Tria una mida personalitzada per a la icona del tauler"
 
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Panel text"
-msgstr "Text del tauler"
-
-#. 5.8
-#. 3.2
-#. 4.0
-msgid "Text to show beside the panel icon"
-msgstr "Text a mostrar al costat de la icona del tauler"
-
-#. 5.8
-#. 5.8
-#. 3.2
-#. 3.2
-#. 4.0
-#. 4.0
-msgid "Category icon size (pixels)"
-msgstr "Mida de la icona de categoria (píxels)"
-
-#. 5.8
-#. 5.8
-#. 3.2
-#. 3.2
-#. 4.0
-#. 4.0
-msgid "Applications list icon size (pixels)"
-msgstr "Mida de la icona de les aplicacions en vista de llista (píxels)"
-
-#. 5.8
-#. 5.8
-#. 3.2
-#. 3.2
-#. 4.0
-#. 4.0
-msgid "Applications grid icon size (pixels)"
-msgstr "Mida de la icona de les aplicacions en vista de quadrícula (píxels)"
-
-#. 5.8
-#. 5.8
-#. 4.0
-#. 4.0
 msgid "Sidebar icon size (pixels)"
 msgstr "Mida de les icones de la barra lateral (píxels)"
 
-#. 5.8
-#. 4.0
 msgid "Use sidebar box style"
 msgstr "Utilitzar barra lateral amb estil de caixa"
 
-#. 5.8
-#. 4.0
 msgid "Use a sidebar box style"
 msgstr "Utilitza una barra lateral amb estil de caixa"
 
-#. 5.8
-#. 4.0
 msgid "Use tile style"
 msgstr "Utilitza l'estil mosaic"
 
-#. 5.8
-#. 4.0
 msgid ""
 "Use a tile style for the application buttons (Note: may not work on some "
 "themes)"
@@ -894,8 +715,6 @@ msgstr ""
 "Mostra els botons de les aplicacions en format mosaic (Nota: pot ser que no "
 "funcioni en determinats temes)"
 
-#. 5.8
-#. 4.0
 msgid ""
 "\n"
 "• Drag on the menu edge to change the menu size."
@@ -903,8 +722,6 @@ msgstr ""
 "\n"
 "• Arrossega a les afores del menú per a canviar la mida."
 
-#. 5.8
-#. 4.0
 msgid ""
 "\n"
 "• Drag and drop menu categories to change their order."
@@ -912,8 +729,6 @@ msgstr ""
 "\n"
 "• Arrossega i deixa anar categories per a canviar el seu ordre (drag&drop)."
 
-#. 5.8
-#. 4.0
 msgid ""
 "\n"
 "• Folders can be set up and removed as menu categories by right-clicking on "
@@ -923,107 +738,24 @@ msgstr ""
 "• Les carpetes poden ser assignades o eliminades com a categories del menú "
 "mitjançant el clic dret."
 
-#. 5.8
-#. 4.0
 msgid ""
 "\n"
-"• Additional key options:\n"
-"ctrl-p — Open launcher properties dialogue of currently highlighted "
-"application.\n"
+"• Additional key option:\n"
 "ctrl-d — Open .desktop file of currently highlighted app in default text "
 "editor.\n"
 msgstr ""
 "\n"
 "• Dreceres de teclat addicionals:\n"
-"ctrl-p — Obre la finestra de diàleg de propietats de l'aplicació actualment "
-"seleccionada.\n"
 "ctrl-d — Obre el fitxer .desktop de l'aplicació actualment seleccionada amb "
 "l'editor de text per defecte.\n"
 
-#. 3.2
-msgid "Search Providers"
-msgstr "Proveïdors de cerca"
-
-#. 3.2
-msgid "No search provider extensions found"
-msgstr "No s'han trobat extensions de proveïdors de cerca"
-
-#. 3.2
-msgid "Recent files settings"
-msgstr "Configuració de fitxers recents"
-
-#. 3.2
-msgid "Enable autoscrolling in application list"
-msgstr "Activa l'auto-scroll a la llista d'aplicacions"
-
-#. 3.2
-msgid "Show web bookmarks"
-msgstr "Mostra marcadors web"
-
-#. 3.2
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "• Drag and drop menu categories to change their order."
 msgid ""
-"Show your browser's web bookmarks in the menu.\n"
-"Note: Install package gir1.2-gda-5.0 to read firefox bookmarks."
+"\n"
+"• Drag and drop apps, files, and folders onto the sidebar."
 msgstr ""
-"Mostra els teus marcadors web al menú.\n"
-"Nota: Instal·la el paquet gir1.2-gda-5.0 per a llegir marcadors de Firefox."
-
-#. 3.2
-msgid "Enable searching of open windows"
-msgstr "Activa la cerca en finestres obertes"
-
-#. 3.2
-msgid "Enable search providers"
-msgstr "Activa els proveïdors de cerca"
-
-#. 3.2
-msgid "Include search provider results in searches"
-msgstr "Inclou resultats dels proveïdors de cerca"
-
-#. 3.2
-msgid "Example Search Providers"
-msgstr "Exemple de proveïdors de cerca"
-
-#. 3.2
-msgid "columns"
-msgstr "columnes"
-
-#. 3.2
-#. 3.2
-msgid "Number of columns in apps grid"
-msgstr "Nombre de columnes de la quadrícula d'aplicacions"
-
-#. 3.2
-#. 3.2
-msgid "Show application icons"
-msgstr "Mostra les icones de les aplicacions"
-
-#. 3.2
-#. 3.2
-msgid "Show category icons"
-msgstr "Mostra les icones de les categories"
-
-#. 3.2
-#. 3.2
-msgid "Show application descriptions under titles"
-msgstr "Mostra la descripció de les aplicacions sota el seu títol"
-
-#. 3.2
-#. 3.2
-msgid "Show tooltips"
-msgstr "Mostra tooltips"
-
-#. 3.2
-#. 3.2
-msgid "Tooltip delay"
-msgstr "Endarreriment al mostrar tooltips"
-
-#. 3.2
-#. 3.2
-msgid "Use a custom menu height"
-msgstr "Usa una alçada de menú personalitzada"
-
-#. 3.2
-#. 3.2
-msgid "Custom menu height (pixels)"
-msgstr "Alçada de menú personalitzada (píxels)"
+"\n"
+"• Arrossega i deixa anar categories per a canviar el seu ordre (drag&drop)."

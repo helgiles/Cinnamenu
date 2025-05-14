@@ -2,7 +2,7 @@
 
 Cinnamenu
 ========
-_Version: 5.5.8 (updated 28/4/25)_ (add support for LibreWolf web bookmarks)
+_Version: 5.5.9 (updated 14/5/25)_ (Add properties option to app context menus)
 
 Cinnamenu is a full featured alternative to the standard Cinnamon menu with grid layout and customisation options.
 

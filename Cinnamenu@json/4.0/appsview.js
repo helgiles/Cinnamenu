@@ -9,12 +9,14 @@ const {SignalManager} = imports.misc.signalManager;
 const {EllipsizeMode} = imports.gi.Pango;
 const {DragMotionResult, makeDraggable} = imports.ui.dnd;
 
-const { _,
-        wordWrap,
-        getThumbnail_gicon,
-        showTooltip,
-        hideTooltipIfVisible,
-        scrollToButton} = require('./utils');
+const {
+    _,
+    wordWrap,
+    getThumbnail_gicon,
+    showTooltip,
+    hideTooltipIfVisible,
+    scrollToButton
+} = require('./utils');
 const ApplicationsViewMode = Object.freeze({LIST: 0, GRID: 1});
 const DescriptionPlacement = Object.freeze({TOOLTIP: 0, UNDER: 1, NONE: 2});
 
@@ -30,14 +32,14 @@ class AppButton {
             this.icon = this.app.icon;
         } else if (this.app.icon_filename) { //some of isSearchResult
             const gicon = new Gio.FileIcon({file: Gio.file_new_for_path(this.app.icon_filename)});
-            this.icon = new St.Icon({ gicon: gicon, icon_size: this.appThis.getAppIconSize()});
+            this.icon = new St.Icon({gicon: gicon, icon_size: this.appThis.getAppIconSize()});
         } else if (this.app.gicon) { //isRecentFile, isFavoriteFile,
                                     //isFolderviewFile/Directory, some of isSearchResult
             let gicon = this.app.gicon;
             if (!this.app.isSearchResult) {
                 gicon = getThumbnail_gicon(this.app.uri, this.app.mimeType) || gicon;
             }
-            this.icon = new St.Icon({ gicon: gicon, icon_size: this.appThis.getAppIconSize()});
+            this.icon = new St.Icon({gicon: gicon, icon_size: this.appThis.getAppIconSize()});
         } else if (this.app.emoji) {//emoji search result
             this.icon = new St.Label({ style: 'color: white; font-size: ' +
                                             (Math.round(this.appThis.getAppIconSize() * 0.85)) + 'px;'});
@@ -47,7 +49,7 @@ class AppButton {
         } else if (this.app.iconFactory) {//isPlace
             this.icon = this.app.iconFactory(this.appThis.getAppIconSize());
             if (!this.icon) {
-                this.icon = new St.Icon({ icon_name: 'folder', icon_size: this.appThis.getAppIconSize()});
+                this.icon = new St.Icon({icon_name: 'folder', icon_size: this.appThis.getAppIconSize()});
             }
         }
         if (!this.icon) {

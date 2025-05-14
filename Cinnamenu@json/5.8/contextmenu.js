@@ -325,9 +325,20 @@ class ContextMenu {
         //show app info 
         if (this.appThis._pamacManagerAvailable) {
             addMenuItem( new ContextMenuItem(this.appThis, _('App Info'), 'dialog-information',
-                        () => { spawnCommandLine("/usr/bin/pamac-manager --details-id=" + app.id);
-                                this.appThis.menu.close(); } ));
+                () => {
+                    spawnCommandLine("/usr/bin/pamac-manager --details-id=" + app.id);
+                    this.appThis.menu.close();
+                }
+            ));
         }
+
+        //Properties
+        addMenuItem( new ContextMenuItem(this.appThis, _('Properties'), 'dialog-information',
+            () => {
+                spawnCommandLine('cinnamon-desktop-editor -mlauncher -o ' + app.desktop_file_path);
+                this.appThis.menu.close();
+            }
+        ));
     }
 
     _populateContextMenu_files(app) {

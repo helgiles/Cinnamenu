@@ -120,6 +120,9 @@ function readFirefoxProfiles(browser) {
 
     let profilesFile, profileDir, bookmarksFile;
     let foundApps = Cinnamon.AppSystem.get_default().lookup_desktop_wmclass(browser);
+    if (!foundApps || foundApps.length === 0) {
+        return [];
+    }
     let appInfo = foundApps.get_app_info();
     let firefoxDir;
     if (browser === 'firefox') {
@@ -127,10 +130,7 @@ function readFirefoxProfiles(browser) {
     } else { //librewolf
         firefoxDir = GLib.build_filenamev([GLib.get_home_dir(), '.librewolf']);
     }
-    if (!foundApps || foundApps.length === 0) {
-        return [];
-    }
-
+    
     profilesFile = Gio.File.new_for_path(GLib.build_filenamev([firefoxDir, 'profiles.ini']));
 
     if (!profilesFile.query_exists(null)) {

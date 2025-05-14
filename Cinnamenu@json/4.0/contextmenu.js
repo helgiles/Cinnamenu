@@ -132,28 +132,32 @@ class ContextMenu {
         };
         if (categoryId.startsWith('/')) {
             addMenuItem(new ContextMenuItem(this.appThis, _('Remove category'), 'user-trash',
-                        () => {
-                            if (categoryId === GLib.get_home_dir()) {
-                                this.appThis.settings.showHomeFolder = false;
-                                this.appThis._onShowHomeFolderChange();
-                            } else {
-                                this.appThis.removeFolderCategory(categoryId);
-                            }
-                            this.appThis.display.categoriesView.update();
-                            this.close();
-                        }));
+                () => {
+                    if (categoryId === GLib.get_home_dir()) {
+                        this.appThis.settings.showHomeFolder = false;
+                        this.appThis._onShowHomeFolderChange();
+                    } else {
+                        this.appThis.removeFolderCategory(categoryId);
+                    }
+                    this.appThis.display.categoriesView.update();
+                    this.close();
+                }
+            ));
             this.menu.addMenuItem(new PopupSeparatorMenuItem(this.appThis));
         }
         addMenuItem(new ContextMenuItem(this.appThis, _('Reset category order'), 'edit-undo-symbolic',
-                            () => { this.appThis.settings.categories = [];
-                                    this.appThis.display.categoriesView.update();
-                                    this.close(); }));
+            () => {
+                this.appThis.settings.categories = [];
+                this.appThis.display.categoriesView.update();
+                this.close();
+            }
+        ));
         
         this._showMenu(e, buttonActor);
     }
 
     openAppsView(event) {
-        //e is used to position context menu at mouse coords.
+        //event is used to position context menu at mouse coords.
         this.contextMenuButtons.forEach(button => button.destroy());
         this.contextMenuButtons = [];
 
@@ -310,9 +314,20 @@ class ContextMenu {
         //show app info 
         if (this.appThis._pamacManagerAvailable) {
             addMenuItem( new ContextMenuItem(this.appThis, _('App Info'), 'dialog-information',
-                        () => { spawnCommandLine("/usr/bin/pamac-manager --details-id=" + app.id);
-                                this.appThis.menu.close(); } ));
+                () => {
+                    spawnCommandLine("/usr/bin/pamac-manager --details-id=" + app.id);
+                    this.appThis.menu.close();
+                }
+            ));
         }
+
+        //Properties
+        addMenuItem( new ContextMenuItem(this.appThis, _('Properties'), 'dialog-information',
+            () => {
+                spawnCommandLine('cinnamon-desktop-editor -mlauncher -o ' + app.desktop_file_path);
+                this.appThis.menu.close();
+            }
+        ));
     }
 
     _populateContextMenu_files(app) {
@@ -333,24 +348,33 @@ class ContextMenu {
 
         //Open with...
         if (fileExists) {
-            addMenuItem( new ContextMenuItem(this.appThis, _('Open with'), null, null ));
+            addMenuItem( new ContextMenuItem(this.appThis, _('Open with'), null, null));
             const defaultInfo = Gio.AppInfo.get_default_for_type(app.mimeType, !hasLocalPath(file));
             if (defaultInfo) {
-                addMenuItem( new ContextMenuItem(   this.appThis, defaultInfo.get_display_name(), null,
-                                                    () => { defaultInfo.launch([file], null);
-                                                            this.appThis.menu.close(); } ));
+                addMenuItem( new ContextMenuItem(this.appThis, defaultInfo.get_display_name(), null,
+                    () => {
+                        defaultInfo.launch([file], null);
+                        this.appThis.menu.close();
+                    }
+                ));
             }
             Gio.AppInfo.get_all_for_type(app.mimeType).forEach(info => {
                 if (!hasLocalPath(file) || !info.supports_uris() || info.equal(defaultInfo)) {
                     return;
                 }
-                addMenuItem( new ContextMenuItem(   this.appThis, info.get_display_name(), null,
-                                                    () => { info.launch([file], null);
-                                                            this.appThis.menu.close(); } ));
+                addMenuItem( new ContextMenuItem(this.appThis, info.get_display_name(), null,
+                    () => {
+                        info.launch([file], null);
+                        this.appThis.menu.close();
+                    }
+                ));
             });
-            addMenuItem( new ContextMenuItem(   this.appThis, _('Other application...'), null,
-                                                () => { spawnCommandLine('nemo-open-with ' + app.uri);
-                                                        this.appThis.menu.close(); } ));
+            addMenuItem( new ContextMenuItem(this.appThis, _('Other application...'), null,
+                () => {
+                    spawnCommandLine('nemo-open-with ' + app.uri);
+                    this.appThis.menu.close();
+                }
+            ));
         }
 
         //add/remove favorite
@@ -395,7 +419,8 @@ class ContextMenu {
                         this.appThis.addFolderCategory(path);
                         this.appThis.display.categoriesView.update();
                         this.close();
-                    }));
+                    }
+                ));
             }
         }
 
@@ -404,11 +429,12 @@ class ContextMenu {
         if (app.isRecentFile || app.isFavoriteFile || app.isFolderviewFile) {
             this.menu.addMenuItem(new PopupSeparatorMenuItem(this.appThis));
             addMenuItem(new ContextMenuItem(this.appThis, _('Open containing folder'), 'go-jump',
-                    () => {
-                        const fileBrowser = Gio.AppInfo.get_default_for_type('inode/directory', true);
-                        fileBrowser.launch([folder], null);
-                        this.appThis.menu.close();
-                    }));
+                () => {
+                    const fileBrowser = Gio.AppInfo.get_default_for_type('inode/directory', true);
+                    fileBrowser.launch([folder], null);
+                    this.appThis.menu.close();
+                }
+            ));
         }
 
         //Move to trash
@@ -418,20 +444,21 @@ class ContextMenu {
             const fileInfo = file.query_info('access::can-trash', Gio.FileQueryInfoFlags.NONE, null);
             const canTrash = fileInfo.get_attribute_boolean('access::can-trash');
             if (canTrash) {
-                addMenuItem( new ContextMenuItem(this.appThis, _('Move to trash'), 'user-trash',
-                            () => {
-                                const file = Gio.File.new_for_uri(app.uri);
-                                try {
-                                    file.trash(null);
-                                } catch (e) {
-                                    Main.notify(_('Error while moving file to trash:'), e.message);
-                                }
-                                this.appThis.setActiveCategory(this.appThis.currentCategory);
-                                this.close();
-                            }));
+                addMenuItem(new ContextMenuItem(this.appThis, _('Move to trash'), 'user-trash',
+                    () => {
+                        const file = Gio.File.new_for_uri(app.uri);
+                        try {
+                            file.trash(null);
+                        } catch (e) {
+                            Main.notify(_('Error while moving file to trash:'), e.message);
+                        }
+                        this.appThis.setActiveCategory(this.appThis.currentCategory);
+                        this.close();
+                    }
+                ));
             } else {//show insensitive item
                 addMenuItem( new ContextMenuItem(this.appThis, _('Move to trash'), 'user-trash',
-                                                                            null, true /*insensitive*/));
+                                                                        null, true /*insensitive*/));
             }
         }
         return true; //success.
