@@ -37,5 +37,4 @@ curl -sSLf https://github.com/fredcw/Cinnamenu/raw/main/install.sh | bash
 
 #### Expert features (optional)
  * `Shift-Enter` — Run currently highlighted application as root user.
- * `ctrl-p` — Open launcher properties dialogue of currently highlighted application.
  * `Ctrl-d` — Open .desktop file of currently highlighted app in default text editor (opens file in user mode.)
