@@ -2,6 +2,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const St = imports.gi.St;
 const Clutter = imports.gi.Clutter;
+const XApp = imports.gi.XApp;
 const Main = imports.ui.main;
 const {PopupBaseMenuItem, PopupMenu, PopupSeparatorMenuItem} = imports.ui.popupMenu;
 const {getUserDesktopDir, changeModeGFile} = imports.misc.fileUtils;
@@ -287,7 +288,7 @@ class ContextMenu {
                         file.copy( destFile, 0, null, null);
                         changeModeGFile(destFile, 755);
                     } catch(e) {
-                        global.logError('Cinnamenu: Error creating desktop file. ' + e.message);
+                        global.logError('Cinnamenu: Error creating desktop file', e.message);
                     }
                     this.close();
                 }
@@ -333,7 +334,7 @@ class ContextMenu {
         }
 
         //Properties
-        addMenuItem( new ContextMenuItem(this.appThis, _('Properties'), 'dialog-information',
+        addMenuItem( new ContextMenuItem(this.appThis, _('Properties'), 'document-properties-symbolic',
             () => {
                 spawnCommandLine('cinnamon-desktop-editor -mlauncher -o ' + app.desktop_file_path);
                 this.appThis.menu.close();
@@ -390,17 +391,17 @@ class ContextMenu {
 
         //add/remove favorite
         this.menu.addMenuItem(new PopupSeparatorMenuItem(this.appThis));
-        if (this.appThis.xappGetIsFavoriteFile(app.uri)) { //favorite
+        if (XApp.Favorites.get_default().find_by_uri(app.uri) !== null) { //favorite
             addMenuItem( new ContextMenuItem(this.appThis, _('Remove from favorites'), 'starred',
                 () => {
-                    this.appThis.xappRemoveFavoriteFile(app.uri);
+                    XApp.Favorites.get_default().remove(app.uri);
                     this.close();
                 }
             ));
         } else {
             addMenuItem( new ContextMenuItem(this.appThis, _('Add to favorites'), 'non-starred',
                 () => {
-                    this.appThis.xappAddFavoriteFile(app.uri);
+                    XApp.Favorites.get_default().add(app.uri);
                     this.close();
                 }
             ));

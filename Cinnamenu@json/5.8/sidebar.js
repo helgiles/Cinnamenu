@@ -4,6 +4,7 @@ const Atk = imports.gi.Atk;
 const Clutter = imports.gi.Clutter;
 const Util = imports.misc.util;
 const St = imports.gi.St;
+const XApp = imports.gi.XApp;
 const Main = imports.ui.main;
 const {SignalManager} = imports.misc.signalManager;
 const {DragMotionResult, makeDraggable} = imports.ui.dnd;
@@ -70,7 +71,7 @@ class SidebarButton {
                     }
                     return DragMotionResult.NO_DROP
                 } else if (source.isDraggableFile){
-                    this.appThis.xappAddFavoriteFile(source.uri);
+                    XApp.Favorites.get_default().add(source.uri);
                     return true;
                 }
             },
@@ -232,10 +233,6 @@ class Sidebar {
         const style_class = this.appThis.settings.useBoxStyle ? 'menu-favorites-box' : 'gridmenu-sidebar-box';
         this.sidebarOuterBox = new St.BoxLayout({style_class: style_class});
         this.sidebarOuterBox.add(this.sidebarScrollBox, { });
-        if (!this.appThis.settings.showSidebar) {
-            this.sidebarScrollBox.width = 0;
-            this.sidebarScrollBox.height = 0;
-        }
     }
 
     populate () {

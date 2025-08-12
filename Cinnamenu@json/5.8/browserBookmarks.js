@@ -32,7 +32,7 @@ let Gda = null;
 try {
     Gda = imports.gi.Gda;
 } catch(e) {
-    log("Cinnamenu: Can't read firefox bookmarks, libgda not installed");
+    global.log("Cinnamenu: Can't read firefox bookmarks, libgda not installed");
 }
 
 const readFileAsync = function(file, opts = {utf8: true}) {
@@ -110,7 +110,7 @@ const readFirefoxBookmarks = function(appInfo, profileDir) {
             });
         }
     } catch(e) {
-        log("Cinnamenu: error reading firefox/librewolf bookmarks file: " + e.message);
+        global.log("Cinnamenu: error reading firefox/librewolf bookmarks file: " + e.message);
     }
     return bookmarks;
 };

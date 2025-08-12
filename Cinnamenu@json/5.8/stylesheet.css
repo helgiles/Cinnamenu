@@ -4,16 +4,25 @@
 ││┌──.gridmenu-middle-pane───────────────────────────────────────────────────────────────────────────────────────────
 │││┌──.gridmenu-sidebar-box*─────────────────┐┌──.menu-categories-scrollbox .vfade──┐┌──.menu-applications-scrollbox .vfade───────
 ││││┌──.gridmenu-sidebar-scrollbox .vfade──┐││┌──.menu-categories-box─────────────┐││┌──.menu-applications-inner-box──────────
-│││││                                      ││││                                   ││││┌──.menu-applications-header-text───┐
-│││││                                      ││││                                   ││││└───────────────────────────────────┘
-││││└───────                               ││││                                   ││││┌──.menu-applications-grid-box────────┐
-│││└───────                                ││││                                   ││││└─────────────────────────────────────┘
+│││││                                      ││││                                   ││││┌──.menu-applications-grid-box───
+│││││                                      ││││                                   │││││┌──.menu-applications-header-text───┐
+│││││                                      ││││                                   │││││└───────────────────────────────────┘
+││││└───────                               ││││                                   │││││┌──.menu-applications-grid-box────────┐
+│││└───────                                ││││                                   │││││└─────────────────────────────────────┘
 ││└──────────────────
 ││┌──.menu-search-box─────────
 │││┌──#menu-search-entry──────────
 
 .gridmenu-sidebar-box may be swapped for .menu-favorites-box as user option
 */
+
+/* The reason that some style css is in this file rather than in cinnamon's default theme is
+ * so that the user theme does not override the more specific selectors here with less specific
+ * selectors. For instance, ".gridmenu .menu-categories-box" in the default theme would have no
+ * effect if ".menu-categories-box" is defined in the user theme. By putting it here, it still
+ * takes effect, unless ".gridmenu .menu-categories-box" specifically, is overridden in the
+ * user theme.
+ */
 
 .gridmenu .menu-categories-box {
     padding: 0px 6px;

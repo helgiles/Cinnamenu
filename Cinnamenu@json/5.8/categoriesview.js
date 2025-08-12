@@ -347,7 +347,7 @@ class CategoriesView {
                     button = new CategoryButton(this.appThis, folder, displayName, null, gicon);
                     newButtons.push(button);
                 } catch(e) {
-                    log("Cinnamenu:Error creating folder category: " + folder + " ...skipping.");
+                    global.log("Cinnamenu: Error creating folder category: " + folder + " ...skipping.");
                     //remove this error causing element from the array.
                     folderCategories.splice(index, 1);
                     folderCategoriesChanged = true;
@@ -361,30 +361,43 @@ class CategoriesView {
             this.appThis.settings.categories = newButtons.map(button => button.id);
         }
 
-        //add new categories to end of user category order if not already included
-        newButtons.forEach(newButton => {
-            if (this.appThis.settings.categories.indexOf(newButton.id) === -1) {
-                this.appThis.settings.categories.push(newButton.id);
-            }
-        });
+        if (!this._inSameOrder(this.appThis.settings.categories, newButtons.map(button => button.id))) {
+            //add new categories to end of user category order if not already included
+            newButtons.forEach(newButton => {
+                if (this.appThis.settings.categories.indexOf(newButton.id) === -1) {
+                    this.appThis.settings.categories.push(newButton.id);
+                }
+            });
 
-        //set this.buttons[] to newButtons[] in user prefered order
-        this.buttons = [];
-        this.appThis.settings.categories.forEach(buttonId => {
-            const foundButton = newButtons.find(newButton => newButton.id === buttonId);
-            if (foundButton && !this.buttons.find(button => button.id === buttonId)) {
-                this.buttons.push(foundButton);
-            }
-        });
+            //set this.buttons[] to newButtons[] in user prefered order
+            this.buttons = [];
+            this.appThis.settings.categories.forEach(buttonId => {
+                const foundButton = newButtons.find(newButton => newButton.id === buttonId);
+                if (foundButton && !this.buttons.find(button => button.id === buttonId)) {
+                    this.buttons.push(foundButton);
+                }
+            });
 
-        //replace user button order to remove unused ids.
-        if (this.appThis.settings.categories.length > this.buttons.length) {
-            this.appThis.settings.categories = this.buttons.map(button => button.id);
+            //replace user button order to remove unused ids.
+            if (this.appThis.settings.categories.length > this.buttons.length) {
+                this.appThis.settings.categories = this.buttons.map(button => button.id);
+            }
+        } else {
+            this.buttons = newButtons;
+            this.appThis.settings.categories = newButtons.map(button => button.id);
         }
 
         //populate categoriesBox with buttons
         this.categoriesBox.remove_all_children();
         this.buttons.forEach(button => this.categoriesBox.add_actor(button.actor));
+    }
+
+    _inSameOrder(a, b) {
+        const setA = new Set(a);
+        const setB = new Set(b);
+        const cleanedA = a.filter(str => setB.has(str));
+        const cleanedB = b.filter(str => setA.has(str));
+        return cleanedA.join() === cleanedB.join();
     }
 
     setSelectedCategoryStyle(categoryId) {

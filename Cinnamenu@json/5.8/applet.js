@@ -136,6 +136,7 @@ class CinnamenuApplet extends TextIconApplet {
             'menu-animated-closed',
             this._onMenuClosed.bind(this)
         );
+        this.signals.connect(XApp.Favorites.get_default(), 'changed', () => this._onXappFavoritesChange());
         this.apps = new Apps(this.appSystem);
         this.screenSaverProxy = new ScreenSaverProxy();
         this.sessionManager = new GnomeSession.SessionManager();
@@ -144,9 +145,9 @@ class CinnamenuApplet extends TextIconApplet {
             Main.keybindingManager.addHotKey(
                 'overlay-key-' + this.instance_id,
                 this.settings.overlayKey,
-                () => {                    
+                () => {
                     if (Main.overview.visible || Main.expo.visible) return;
-                    if (!this.isOpen) {
+                    if (!this.menu.isOpen) {
                         this.panel.peekPanel();
                     }
                     this.menu.toggle_with_options(this.settings.enableAnimation);
@@ -390,32 +391,15 @@ class CinnamenuApplet extends TextIconApplet {
         }
     }
 
-    updateAfterXappFavoriteFileChange() {
+    _onXappFavoritesChange() {
+        if (!this.menu.isOpen) return;
+
         this.display.sidebar.populate();
         this.display.categoriesView.update();//in case fav files category needs adding/removing
         this.display.updateMenuSize();
         if (this.currentCategory === 'favorite_files') {
             this.setActiveCategory(this.currentCategory);
         }
-    }
-
-    xappGetIsFavoriteFile(uri) {
-        const favs = XApp.Favorites.get_default();
-        return favs.find_by_uri(uri) !== null;
-    }
-
-    xappAddFavoriteFile(uri) {
-        const favs = XApp.Favorites.get_default();
-        favs.add(uri);
-        //xapp favs list doesn't update synchronously after adding fav so add small
-        //delay before updating menu.
-        Mainloop.timeout_add(100, this.updateAfterXappFavoriteFileChange.bind(this));
-    }
-
-    xappRemoveFavoriteFile(uri) {
-        const favs = XApp.Favorites.get_default();
-        favs.remove(uri);
-        this.updateAfterXappFavoriteFileChange();
     }
 
     getIsFolderCategory(path) {
@@ -453,8 +437,10 @@ class CinnamenuApplet extends TextIconApplet {
 
         this.display.searchView.tweakTheme();
         this.display.categoriesView.update();//in case menu editor or enabled category changes.
-        this.display.sidebar.populate();//in case fav files changed
-        this.display.sidebar.scrollToQuitButton();//ensure quit button is visible
+        if (this.settings.showSidebar) {
+            this.display.sidebar.populate();//in case fav files changed
+            this.display.sidebar.scrollToQuitButton();//ensure quit button is visible
+        }
 
         global.stage.set_key_focus(this.display.searchView.searchEntry);
         if (this.currentCategory === 'places' && !this.settings.showPlaces ||
@@ -1021,7 +1007,6 @@ class CinnamenuApplet extends TextIconApplet {
         }
         
         //---start search---
-        this.currentSearchStr = searchText;
 
         //Set a new search ID so that async search functions
         //from a previous search can be aborted.

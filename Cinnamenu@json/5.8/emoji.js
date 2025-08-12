@@ -655,7 +655,7 @@ const EMOJI = [
 'dashing away',
 'comic dash running wind air fast shoo fart smoke puff'
 ],[
-'🕳',
+'🕳️',
 'hole',
 'embarrassing'
 ],[

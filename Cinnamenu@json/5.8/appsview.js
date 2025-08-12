@@ -476,6 +476,9 @@ class AppsView {
         this.applicationsBoxWrapper.add(this.headerText, { x_fill: false, x_align: St.Align.MIDDLE });
         this.applicationsBoxWrapper.add(this.applicationsGridBox, {});
         this.applicationsBoxWrapper.add(this.applicationsListBox, {});
+        // Add additional box with 0 padding as a workaround to bug github.com/linuxmint/cinnamon/issues/11760
+        this.bugfixBox = new St.BoxLayout({ style: 'padding: 0px; margin: 0px; spacing: 0px;' });
+        this.bugfixBox.add_actor(this.applicationsBoxWrapper);
         this.applicationsScrollBox = new St.ScrollView(
                                             { style_class: 'vfade menu-applications-scrollbox' });
         const vscrollApplications = this.applicationsScrollBox.get_vscroll_bar();
@@ -483,7 +486,7 @@ class AppsView {
                                                 () => { this.appThis.menu.passEvents = true; });
         this.appsViewSignals.connect(vscrollApplications, 'scroll-stop',
                                                 () => { this.appThis.menu.passEvents = false; });
-        this.applicationsScrollBox.add_actor(this.applicationsBoxWrapper);
+        this.applicationsScrollBox.add_actor(this.bugfixBox);
         this.applicationsScrollBox.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
         this.applicationsScrollBox.set_clip_to_allocation(true);
         this.applicationsScrollBox.set_auto_scrolling(this.appThis.settings.enableAutoScroll);
