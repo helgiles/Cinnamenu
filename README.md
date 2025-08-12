@@ -2,7 +2,7 @@
 
 Cinnamenu
 ========
-_Version: 5.5.9 (updated 14/5/25)_ (Add properties option to app context menus)
+_Version: 5.5.10 (updated 12/8/25)_ (category arrangement, performance)
 
 Cinnamenu is a full featured alternative to the standard Cinnamon menu with grid layout and customisation options.
 
