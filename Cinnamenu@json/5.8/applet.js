@@ -101,7 +101,9 @@ class CinnamenuApplet extends TextIconApplet {
     
             this.display.destroy();
             this.menu.removeAll();
-            this.display = new Display(this);
+            this.display = new Display(this)
+            this.display.sidebar.populate();
+            this.display.categoriesView.update();
             this.display.clearFocusedActors();
         }
         
@@ -194,20 +196,20 @@ class CinnamenuApplet extends TextIconApplet {
 
         { key: 'applications-view-mode',    value: 'applicationsViewMode',  cb: refreshDisplay },
         { key: 'description-placement',     value: 'descriptionPlacement',  cb: refreshDisplay },
-        { key: 'show-sidebar',              value: 'showSidebar',           cb: refreshDisplay},
+        { key: 'show-sidebar',              value: 'showSidebar',           cb: refreshDisplay },
         { key: 'sidebar-placement',         value: 'sidebarPlacement',      cb: refreshDisplay },
         { key: 'sidebar-favorites',         value: 'sidebarFavorites',      cb: refreshDisplay },
         
         { key: 'show-categories',           value: 'showCategories',        cb: refreshDisplay},
-        { key: 'show-places-category',      value: 'showPlaces',            cb: null},
-        { key: 'show-recents-category',     value: 'showRecents',     cb: this._onEnableRecentsChange },
-        { key: 'show-favorite-apps-category', value: 'showFavAppsCategory', cb: null },
+        { key: 'show-places-category',      value: 'showPlaces',            cb: () => this.display.categoriesView.update() },
+        { key: 'show-recents-category',     value: 'showRecents',           cb: this._onEnableRecentsChange },
+        { key: 'show-favorite-apps-category', value: 'showFavAppsCategory', cb: () => this.display.categoriesView.update() },
         { key: 'show-home-folder-category', value: 'showHomeFolder',        cb: this._onShowHomeFolderChange},
-        { key: 'show-emoji-category',       value: 'showEmojiCategory',     cb: null},
+        { key: 'show-emoji-category',       value: 'showEmojiCategory',     cb: () => this.display.categoriesView.update() },
 
         { key: 'overlay-key',               value: 'overlayKey',            cb: updateKeybinding },
-        { key: 'activate-on-hover',         value: 'activateOnHover',     cb: updateActivateOnHover },
-        { key: 'hover-delay',               value: 'hoverDelayMs',        cb: updateActivateOnHover },
+        { key: 'activate-on-hover',         value: 'activateOnHover',       cb: updateActivateOnHover },
+        { key: 'hover-delay',               value: 'hoverDelayMs',          cb: updateActivateOnHover },
         { key: 'enable-animation',          value: 'enableAnimation',       cb: null },
         { key: 'open-on-category',          value: 'openOnCategory',        cb: null },
 
@@ -222,13 +224,13 @@ class CinnamenuApplet extends TextIconApplet {
         { key: 'enable-web-history-search', value: 'enableWebHistorySearch', cb: null },
         { key: 'enable-web-bookmarks-search', value: 'enableWebBookmarksSearch', cb: null },
         { key: 'enable-wikipedia-search',   value: 'enableWikipediaSearch', cb: null },
-        { key: 'wikipedia-language',      value: 'wikipediaLanguage',     cb: clearWikiSearchCache },
+        { key: 'wikipedia-language',        value: 'wikipediaLanguage',     cb: clearWikiSearchCache },
 
-        { key: 'menu-icon-custom',        value: 'menuIconCustom',     cb: this._updateIconAndLabel },
-        { key: 'menu-icon',               value: 'menuIcon',           cb: this._updateIconAndLabel },
-        { key: 'menu-icon-size-custom',   value: 'menuIconSizeCustom', cb: this._updateIconAndLabel },
-        { key: 'menu-icon-size',          value: 'menuIconSize',       cb: this._updateIconAndLabel },
-        { key: 'menu-label',              value: 'menuLabel',          cb: this._updateIconAndLabel },
+        { key: 'menu-icon-custom',          value: 'menuIconCustom',        cb: this._updateIconAndLabel },
+        { key: 'menu-icon',                 value: 'menuIcon',              cb: this._updateIconAndLabel },
+        { key: 'menu-icon-size-custom',     value: 'menuIconSizeCustom',    cb: this._updateIconAndLabel },
+        { key: 'menu-icon-size',            value: 'menuIconSize',          cb: this._updateIconAndLabel },
+        { key: 'menu-label',                value: 'menuLabel',             cb: this._updateIconAndLabel },
 
         { key: 'category-icon-size',        value: 'categoryIconSize',      cb: refreshDisplay },
         { key: 'apps-list-icon-size',       value: 'appsListIconSize',      cb: refreshDisplay },
@@ -251,6 +253,8 @@ class CinnamenuApplet extends TextIconApplet {
         updateActivateOnHover();
         updateKeybinding();
         this.display = new Display(this);
+        this.display.sidebar.populate();
+        this.display.categoriesView.update();
         this._updateIconAndLabel();
     }
 //----------------TextIconApplet callbacks----------------
@@ -313,6 +317,9 @@ class CinnamenuApplet extends TextIconApplet {
     _onEnableRecentsChange () {
         const recentFilesEnabled = this.privacy_settings.get_boolean(REMEMBER_RECENT_KEY);
         this.recentsEnabled = this.settings.showRecents && recentFilesEnabled;
+        if (this.display) {
+            this.display.categoriesView.update();
+        }
     };
 
     _updateIconAndLabel() {
@@ -366,10 +373,12 @@ class CinnamenuApplet extends TextIconApplet {
         if (this.settings.showHomeFolder) {
             if (!this.getIsFolderCategory(homePath)) {
                 this.addFolderCategory(homePath);
+                this.display.categoriesView.update();
             }
         } else {
             if (this.getIsFolderCategory(homePath)) {
                 this.removeFolderCategory(homePath);
+                this.display.categoriesView.update();
             }
         }
     }
@@ -392,13 +401,14 @@ class CinnamenuApplet extends TextIconApplet {
     }
 
     _onXappFavoritesChange() {
-        if (!this.menu.isOpen) return;
-
         this.display.sidebar.populate();
-        this.display.categoriesView.update();//in case fav files category needs adding/removing
-        this.display.updateMenuSize();
-        if (this.currentCategory === 'favorite_files') {
-            this.setActiveCategory(this.currentCategory);
+        this.display.categoriesView.update(); //in case fav files category needs adding/removing
+        
+        if (this.menu.isOpen) {
+            this.display.updateMenuSize();
+            if (this.currentCategory === 'favorite_files') {
+                this.setActiveCategory(this.currentCategory);
+            }
         }
     }
 
@@ -436,9 +446,8 @@ class CinnamenuApplet extends TextIconApplet {
         }
 
         this.display.searchView.tweakTheme();
-        this.display.categoriesView.update();//in case menu editor or enabled category changes.
+        
         if (this.settings.showSidebar) {
-            this.display.sidebar.populate();//in case fav files changed
             this.display.sidebar.scrollToQuitButton();//ensure quit button is visible
         }
 

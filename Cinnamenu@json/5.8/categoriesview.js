@@ -288,6 +288,9 @@ class CategoriesView {
     }
 
     update() {
+        if (!this.appThis.settings.showCategories)
+            return; // Not necessary but saves time.
+
         //Put all enabled categories into newButtons[] in default order by reusing the
         //buttons in this.buttons[] or by creating new CategoryButton.
         const newButtons = [];
@@ -361,7 +364,13 @@ class CategoriesView {
             this.appThis.settings.categories = newButtons.map(button => button.id);
         }
 
-        if (!this._inSameOrder(this.appThis.settings.categories, newButtons.map(button => button.id))) {
+        // Normally, newButtons array contains the correct buttons in the right order. However, if the
+        // category order is customised, we need to add any new buttons to the end of the customised list
+        // and remove any deleted categories from the customised list.
+        if (this._inSameOrder(this.appThis.settings.categories, newButtons.map(button => button.id))) {
+            this.buttons = newButtons;
+            this.appThis.settings.categories = newButtons.map(button => button.id);
+        } else {
             //add new categories to end of user category order if not already included
             newButtons.forEach(newButton => {
                 if (this.appThis.settings.categories.indexOf(newButton.id) === -1) {
@@ -382,9 +391,6 @@ class CategoriesView {
             if (this.appThis.settings.categories.length > this.buttons.length) {
                 this.appThis.settings.categories = this.buttons.map(button => button.id);
             }
-        } else {
-            this.buttons = newButtons;
-            this.appThis.settings.categories = newButtons.map(button => button.id);
         }
 
         //populate categoriesBox with buttons
@@ -393,6 +399,7 @@ class CategoriesView {
     }
 
     _inSameOrder(a, b) {
+        //Determine if two arrays of strings are in the same order ignoring any strings that are not in both.
         const setA = new Set(a);
         const setB = new Set(b);
         const cleanedA = a.filter(str => setB.has(str));
