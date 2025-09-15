@@ -398,6 +398,13 @@ class CategoriesView {
         this.buttons.forEach(button => this.categoriesBox.add_actor(button.actor));
     }
 
+    updateCategoriesShouldHighlight() {
+        this.appThis.apps.getDirs().forEach(dir => {
+            let button = this.buttons.find(button => button.id === dir.dirId);
+            button.setHighlight(this.appThis.apps.dirHasNewApp(dir.dirId));
+        });
+    }
+
     _inSameOrder(a, b) {
         //Determine if two arrays of strings are in the same order ignoring any strings that are not in both.
         const setA = new Set(a);

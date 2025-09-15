@@ -312,6 +312,7 @@ class AppButton {
             if (this.app.newAppShouldHighlight) {
                 this.app.newAppShouldHighlight = false;
                 this._setNewAppHighlightClass();
+                this.appThis.display.categoriesView.updateCategoriesShouldHighlight();
             }
             this.appThis.recentApps.add(this.app.id);
             this.app.open_new_window(-1);
@@ -344,6 +345,7 @@ class AppButton {
             if (this.app.newAppShouldHighlight) {
                 this.app.newAppShouldHighlight = false;
                 this._setNewAppHighlightClass();
+                this.appThis.display.categoriesView.updateCategoriesShouldHighlight();
             }
             this.appThis.recentApps.add(this.app.id);
             Util.spawn([__meta.path + '/rar.sh', this.app.get_app_info().get_executable()]);
