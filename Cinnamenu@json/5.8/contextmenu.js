@@ -3,11 +3,12 @@ const GLib = imports.gi.GLib;
 const St = imports.gi.St;
 const Clutter = imports.gi.Clutter;
 const XApp = imports.gi.XApp;
+const Meta = imports.gi.Meta;
 const Main = imports.ui.main;
 const {PopupBaseMenuItem, PopupMenu, PopupSeparatorMenuItem} = imports.ui.popupMenu;
 const {getUserDesktopDir, changeModeGFile} = imports.misc.fileUtils;
 const {SignalManager} = imports.misc.signalManager;
-const {spawnCommandLine} = imports.misc.util;
+const Util = imports.misc.util;
 
 const {_} = require('./utils');
 const {MODABLE, MODED} = require('./emoji');
@@ -102,9 +103,21 @@ class ContextMenu {
                                                                        // MODED[i] with skin tone option.
                 const item = new ContextMenuItem(this.appThis, newEmoji + ' ' + text, null,
                     () => {
+                        this.appThis.menu.close();
                         const clipboard = St.Clipboard.get_default();
                         clipboard.set_text(St.ClipboardType.CLIPBOARD, newEmoji);
-                        this.appThis.menu.close();
+                        Meta.later_add(Meta.LaterType.IDLE,
+                            () => {
+                                // Simulate "ctrl+v".
+                                const seat = Clutter.get_default_backend().get_default_seat();
+                                const virtualDevice = seat.create_virtual_device(Clutter.InputDeviceType.KEYBOARD_DEVICE);
+                                const time_us = GLib.get_monotonic_time();
+                                virtualDevice.notify_keyval(time_us, Clutter.KEY_Control_L, Clutter.KeyState.PRESSED);
+                                virtualDevice.notify_keyval(time_us, Clutter.KEY_v, Clutter.KeyState.PRESSED);
+                                virtualDevice.notify_keyval(time_us, Clutter.KEY_v, Clutter.KeyState.RELEASED);
+                                virtualDevice.notify_keyval(time_us, Clutter.KEY_Control_L, Clutter.KeyState.RELEASED);
+                            }
+                        );
                     }
                 );
                 this.menu.addMenuItem(item);
@@ -251,7 +264,7 @@ class ContextMenu {
                     try {
                         app.launch_offloaded(0, [], -1);
                     } catch (e) {
-                        logError(e, 'Could not launch app with dedicated gpu: ');
+                        global.logError('Could not launch app with dedicated gpu: ', e);
                     }
                     this.appThis.menu.close();
                 }
@@ -316,7 +329,7 @@ class ContextMenu {
         if (this.appThis._canUninstallApps) {
             addMenuItem( new ContextMenuItem(this.appThis, _('Uninstall'), 'edit-delete',
                 () => {
-                    spawnCommandLine("/usr/bin/cinnamon-remove-application '" +
+                    Util.spawnCommandLine("/usr/bin/cinnamon-remove-application '" +
                                                 app.get_app_info().get_filename() + "'");
                     this.appThis.menu.close();
                 }
@@ -327,7 +340,7 @@ class ContextMenu {
         if (this.appThis._pamacManagerAvailable) {
             addMenuItem( new ContextMenuItem(this.appThis, _('App Info'), 'dialog-information',
                 () => {
-                    spawnCommandLine("/usr/bin/pamac-manager --details-id=" + app.id);
+                    Util.spawnCommandLine("/usr/bin/pamac-manager --details-id=" + app.id);
                     this.appThis.menu.close();
                 }
             ));
@@ -336,7 +349,7 @@ class ContextMenu {
         //Properties
         addMenuItem( new ContextMenuItem(this.appThis, _('Properties'), 'document-properties-symbolic',
             () => {
-                spawnCommandLine('cinnamon-desktop-editor -mlauncher -o ' + app.desktop_file_path);
+                Util.spawnCommandLine('cinnamon-desktop-editor -mlauncher -o ' + app.desktop_file_path);
                 this.appThis.menu.close();
             }
         ));
@@ -383,7 +396,7 @@ class ContextMenu {
             });
             addMenuItem( new ContextMenuItem(this.appThis, _('Other application...'), null,
                 () => {
-                    spawnCommandLine('nemo-open-with ' + app.uri);
+                    Util.spawnCommandLine('nemo-open-with ' + app.uri);
                     this.appThis.menu.close();
                 }
             ));

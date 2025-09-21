@@ -1,8 +1,10 @@
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const GLib = imports.gi.GLib;
 const Clutter = imports.gi.Clutter;
 const St = imports.gi.St;
 const Atk = imports.gi.Atk;
+const Meta = imports.gi.Meta;
 const Main = imports.ui.main;
 const Util = imports.misc.util;
 const {SignalManager} = imports.misc.signalManager;
@@ -334,6 +336,23 @@ class AppButton {
             this.appThis.recentManagerDefault.purge_items();
             this.appThis.setActiveCategory('recents');
             //don't menu.close
+        } else if (this.app.isSearchResult && this.app.emoji) {
+            this.appThis.menu.close();
+            Meta.later_add(Meta.LaterType.IDLE,
+                () => {
+                    const clipboard = St.Clipboard.get_default();
+                    clipboard.set_text(St.ClipboardType.CLIPBOARD, this.app.emoji);
+
+                    // Simulate "ctrl+v".
+                    const seat = Clutter.get_default_backend().get_default_seat();
+                    const virtualDevice = seat.create_virtual_device(Clutter.InputDeviceType.KEYBOARD_DEVICE);
+                    const time_us = GLib.get_monotonic_time();
+                    virtualDevice.notify_keyval(time_us, Clutter.KEY_Control_L, Clutter.KeyState.PRESSED);
+                    virtualDevice.notify_keyval(time_us, Clutter.KEY_v, Clutter.KeyState.PRESSED);
+                    virtualDevice.notify_keyval(time_us, Clutter.KEY_v, Clutter.KeyState.RELEASED);
+                    virtualDevice.notify_keyval(time_us, Clutter.KEY_Control_L, Clutter.KeyState.RELEASED);
+                }
+            );
         } else if (this.app.isSearchResult || this.app.isPlace) {
             this.app.activate(this.app);
             this.appThis.menu.close();
@@ -494,17 +513,18 @@ class AppsView {
         this.applicationsScrollBox.set_auto_scrolling(this.appThis.settings.enableAutoScroll);
         this.applicationsScrollBox.set_mouse_scrolling(true);
         this.appsViewSignals.connect(this.applicationsScrollBox, 'button-release-event',
-                        (actor, event) => {
-                            if (event.get_button() === Clutter.BUTTON_SECONDARY  &&
-                                        !this.appThis.display.contextMenu.isOpen &&
-                                        (this.appThis.currentCategory === 'all' ||
-                                        this.appThis.currentCategory.startsWith('/'))) {
-                                hideTooltipIfVisible();
-                                this.appThis.display.contextMenu.openAppsViewContextMenu(event);
-                                return Clutter.EVENT_STOP;
-                            }
-                            return Clutter.EVENT_PROPAGATE;
-                        });
+            (actor, event) => {
+                if (event.get_button() === Clutter.BUTTON_SECONDARY  &&
+                            !this.appThis.display.contextMenu.isOpen &&
+                            (this.appThis.currentCategory === 'all' ||
+                            this.appThis.currentCategory.startsWith('/'))) {
+                    hideTooltipIfVisible();
+                    this.appThis.display.contextMenu.openAppsViewContextMenu(event);
+                    return Clutter.EVENT_STOP;
+                }
+                return Clutter.EVENT_PROPAGATE;
+            }
+        );
     }
 
     populate(appList, headerText = null) {
@@ -521,7 +541,7 @@ class AppsView {
     populate_init(headerText = null) {
         this.applicationsListBox.hide();//hide while populating for performance.
         //this.applicationsGridBox.hide();//gridBox is slower when hidden!
-        this.clearApps();
+        this.clearAppsView();
         this.applicationsScrollBox.vscroll.adjustment.set_value(0);//scroll to top
 
         if (headerText) {
@@ -674,8 +694,8 @@ class AppsView {
         return activeButtons;
     }
 
-    clearApps() {
-        this.clearAppsViewFocusedActors();
+    clearAppsView() {
+        this.leaveAppsViewFocusedActor();
 
         //destroy subheading labels
         if(this.subheadings){
@@ -686,7 +706,7 @@ class AppsView {
         this.getActiveContainer().remove_all_children();
     }
 
-    clearAppsViewFocusedActors() {
+    leaveAppsViewFocusedActor() {
         this.getActiveButtons().forEach(button => { if (button.has_focus) button.handleLeave(); });
     }
 

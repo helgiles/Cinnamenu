@@ -499,7 +499,7 @@ class CinnamenuApplet extends TextIconApplet {
             this._endSearchMode();
         }
         this.display.clearFocusedActors();
-        this.display.appsView.clearApps();//for quicker reopening of menu
+        this.display.appsView.clearAppsView();//for quicker reopening of menu
     }
 
     _onMenuKeyPress(actor, event) {
@@ -958,9 +958,10 @@ class CinnamenuApplet extends TextIconApplet {
                 EMOJI_CATEGORIES.forEach(category => {
                     if (category.name == emojiCategory) {
                         this.display.appsView.populate_add(
-                                                this.listEmojiByRange(category.start, category.end),
-                                                category.name + ' ▽',//🞃⏷▽⯆
-                                                () => this.setActiveCategory('emoji:'));
+                            this.listEmojiByRange(category.start, category.end),
+                            category.name + ' ▽',//🞃⏷▽⯆
+                            () => this.setActiveCategory('emoji:')
+                        );
                     } else {
                         this.display.appsView.populate_add([], category.name + ' ▷',//🞂⏵▷⯈
                             () => {
@@ -975,8 +976,10 @@ class CinnamenuApplet extends TextIconApplet {
                                             this.setActiveCategory('emoji:' + category.name);
                                             return false;
                                         });
-                                    });
-                            });
+                                    }
+                                );
+                            }
+                        );
                     }
                 });
 
@@ -1200,17 +1203,14 @@ class CinnamenuApplet extends TextIconApplet {
                 }
             }
             
-            if (!this.calcGIcon) {
-                this.calcGIcon = new Gio.FileIcon(
-                        { file: Gio.file_new_for_path(__meta.path + '/../icons/calc.png')});
-            }
             otherResults.push({
                 isSearchResult: true,
                 name: ans_str,
                 description: _('Click to copy'),
                 deleteAfterUse: true,
                 icon: new St.Icon({
-                    gicon: this.calcGIcon,
+                    icon_name: 'accessories-calculator',
+                    icon_type: St.IconType.FULLCOLOR,
                     icon_size: this.getAppIconSize()
                 }),
                 activate: () => {
@@ -1362,11 +1362,7 @@ class CinnamenuApplet extends TextIconApplet {
                         description: _('Click to copy'),
                         isSearchResult: true,
                         deleteAfterUse: true,
-                        emoji: emoji[EMOJI_CODE],
-                        activate: () => {
-                            const clipboard = St.Clipboard.get_default();
-                            clipboard.set_text(St.ClipboardType.CLIPBOARD, emoji[EMOJI_CODE]);
-                        }
+                        emoji: emoji[EMOJI_CODE]
                     });
                 }
             });

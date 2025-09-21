@@ -2,7 +2,7 @@
 
 Cinnamenu
 ========
-_Version: 5.5.11 (updated 14/9/25)_ (performance)
+_Version: 5.5.12 (updated 21/9/25)_ (auto paste emoji)
 
 Cinnamenu is a full featured alternative to the standard Cinnamon menu with grid layout and customisation options.
 

@@ -110,7 +110,7 @@ const readFirefoxBookmarks = function(appInfo, profileDir) {
             });
         }
     } catch(e) {
-        global.log("Cinnamenu: error reading firefox/librewolf bookmarks file: " + e.message);
+        global.logWarning("Cinnamenu: error reading firefox/librewolf bookmarks file: " + e.message);
     }
     return bookmarks;
 };

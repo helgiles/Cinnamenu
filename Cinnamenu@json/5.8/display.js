@@ -183,8 +183,8 @@ class Display {
         if (this.contextMenu.isOpen) {
             this.contextMenu.close();
         }
-        this.appsView.clearAppsViewFocusedActors();
-        this.sidebar.clearSidebarFocusedActors();
+        this.appsView.leaveAppsViewFocusedActor();
+        this.sidebar.leaveSidebarFocusedActor();
         this.categoriesView.allButtonsRemoveFocusAndHover();
     }
 

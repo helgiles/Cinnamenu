@@ -390,7 +390,7 @@ class Sidebar {
         return this.items;
     }
 
-    clearSidebarFocusedActors() {
+    leaveSidebarFocusedActor() {
         const foundItem = this.items.findIndex(button => button.has_focus);
         if (foundItem > -1) {
             this.items[foundItem].handleLeave();
