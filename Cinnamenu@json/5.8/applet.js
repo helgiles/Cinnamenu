@@ -1359,7 +1359,7 @@ class CinnamenuApplet extends TextIconApplet {
                     emojiResults.push({
                         name: emoji[EMOJI_NAME],
                         score: bestScore,
-                        description: _('Click to copy'),
+                        description: _('Click to insert emoji'),
                         isSearchResult: true,
                         deleteAfterUse: true,
                         emoji: emoji[EMOJI_CODE]
@@ -1857,7 +1857,7 @@ class CinnamenuApplet extends TextIconApplet {
         for (let i = rangeStart; i < rangeEnd; i++) {
             results.push({
                 name: EMOJI[i][EMOJI_NAME],
-                description: _('Click to copy'),
+                description: _('Click to insert emoji'),
                 isSearchResult: true,
                 deleteAfterUse: true,
                 emoji: EMOJI[i][EMOJI_CODE],
