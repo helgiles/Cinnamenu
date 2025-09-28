@@ -1154,18 +1154,17 @@ class CinnamenuApplet extends TextIconApplet {
                     ans_str = Number(ans.toPrecision(16)).toString();
                 }
             }
-            
-            if (!this.calcGIcon) {
-                this.calcGIcon = new Gio.FileIcon(
-                        { file: Gio.file_new_for_path(__meta.path + '/../icons/calc.png')});
-            }
+
             otherResults.push({
                             isSearchResult: true,
                             name: ans_str,//('Solution:') + ' ' + ans,
                             description: _('Click to copy'),
                             deleteAfterUse: true,
-                            icon: new St.Icon({ gicon: this.calcGIcon,
-                                                icon_size: this.getAppIconSize() }),
+                            icon: new St.Icon({
+                                icon_name: 'accessories-calculator',
+                                icon_type: St.IconType.FULLCOLOR,
+                                icon_size: this.getAppIconSize()
+                            }),
                             activate: () => {
                                     const clipboard = St.Clipboard.get_default();
                                     clipboard.set_text(St.ClipboardType.CLIPBOARD, ans_str);}
