@@ -14,9 +14,9 @@ const {_} = require('./utils');
 const {MODABLE, MODED} = require('./emoji');
 
 class ContextMenuItem extends PopupBaseMenuItem {
-    constructor(appThis, label, iconName, action, insensitive = false) {
+    constructor(applet, label, iconName, action, insensitive = false) {
         super({focusOnHover: false});
-        this.appThis = appThis;
+        this.applet = applet;
         if (iconName) {
             const icon = new St.Icon({ style_class: 'popup-menu-icon', icon_name: iconName,
                                                                 icon_type: St.IconType.SYMBOLIC});
@@ -67,9 +67,9 @@ class ContextMenuItem extends PopupBaseMenuItem {
 }
 
 class ContextMenu {
-    constructor(appThis) {
-        this.appThis = appThis;
-        this.menu = new PopupMenu(this.appThis.actor /*,St.Side.TOP*/);
+    constructor(applet) {
+        this.applet = applet;
+        this.menu = new PopupMenu(this.applet.actor /*,St.Side.TOP*/);
         this.menu.actor.hide();
         this.contextMenuBox = new St.BoxLayout({ style_class: '', vertical: true, reactive: true });
         this.contextMenuBox.add_actor(this.menu.actor);
@@ -101,9 +101,9 @@ class ContextMenu {
             const addMenuItem = (char, text) => {
                 const newEmoji = MODED[i].replace(/\u{1F3FB}/ug, char); //replace light skin tone character in
                                                                        // MODED[i] with skin tone option.
-                const item = new ContextMenuItem(this.appThis, newEmoji + ' ' + text, null,
+                const item = new ContextMenuItem(this.applet, newEmoji + ' ' + text, null,
                     () => {
-                        this.appThis.menu.close();
+                        this.applet.menu.close();
                         const clipboard = St.Clipboard.get_default();
                         clipboard.set_text(St.ClipboardType.CLIPBOARD, newEmoji);
                         Meta.later_add(Meta.LaterType.IDLE,
@@ -146,24 +146,24 @@ class ContextMenu {
             this.contextMenuButtons.push(item);
         };
         if (categoryId.startsWith('/')) {
-            addMenuItem(new ContextMenuItem(this.appThis, _('Remove category'), 'user-trash',
+            addMenuItem(new ContextMenuItem(this.applet, _('Remove category'), 'user-trash',
                 () => {
                     if (categoryId === GLib.get_home_dir()) {
-                        this.appThis.settings.showHomeFolder = false;
-                        this.appThis._onShowHomeFolderChange();
+                        this.applet.settings.showHomeFolder = false;
+                        this.applet._onShowHomeFolderChange();
                     } else {
-                        this.appThis.removeFolderCategory(categoryId);
+                        this.applet.removeFolderCategory(categoryId);
                     }
-                    this.appThis.display.categoriesView.update();
+                    this.applet.display.categoriesView.update();
                     this.close();
                 }
             ));
-            this.menu.addMenuItem(new PopupSeparatorMenuItem(this.appThis));
+            this.menu.addMenuItem(new PopupSeparatorMenuItem(this.applet));
         }
-        addMenuItem(new ContextMenuItem(this.appThis, _('Reset category order'), 'edit-undo-symbolic',
+        addMenuItem(new ContextMenuItem(this.applet, _('Reset category order'), 'edit-undo-symbolic',
             () => {
-                this.appThis.settings.categories = [];
-                this.appThis.display.categoriesView.update();
+                this.applet.settings.categories = [];
+                this.applet.display.categoriesView.update();
                 this.close();
             }
         ));
@@ -181,36 +181,36 @@ class ContextMenu {
             this.menu.addMenuItem(item);
             this.contextMenuButtons.push(item);
         };
-        if (this.appThis.currentCategory === 'all') {
-            if (this.appThis.settings.allAppsOldStyle) {
-                addMenuItem(new ContextMenuItem(this.appThis, _('List settings apps separately'), null,
+        if (this.applet.currentCategory === 'all') {
+            if (this.applet.settings.allAppsOldStyle) {
+                addMenuItem(new ContextMenuItem(this.applet, _('List settings apps separately'), null,
                             () => {
-                                this.appThis.settings.allAppsOldStyle = false;
+                                this.applet.settings.allAppsOldStyle = false;
                                 this.close();
-                                this.appThis.setActiveCategory(this.appThis.currentCategory);
+                                this.applet.setActiveCategory(this.applet.currentCategory);
                             }));
             } else {
-                addMenuItem(new ContextMenuItem(this.appThis, _('Single list style'), null,
+                addMenuItem(new ContextMenuItem(this.applet, _('Single list style'), null,
                             () => {
-                                this.appThis.settings.allAppsOldStyle = true;
+                                this.applet.settings.allAppsOldStyle = true;
                                 this.close();
-                                this.appThis.setActiveCategory(this.appThis.currentCategory);
+                                this.applet.setActiveCategory(this.applet.currentCategory);
                             }));
             }
-        } else if (this.appThis.currentCategory.startsWith('/')) {
-            if (this.appThis.settings.showHiddenFiles) {
-                addMenuItem(new ContextMenuItem(this.appThis, _('Hide hidden files'), null,
+        } else if (this.applet.currentCategory.startsWith('/')) {
+            if (this.applet.settings.showHiddenFiles) {
+                addMenuItem(new ContextMenuItem(this.applet, _('Hide hidden files'), null,
                             () => {
-                                this.appThis.settings.showHiddenFiles = false;
+                                this.applet.settings.showHiddenFiles = false;
                                 this.close();
-                                this.appThis.setActiveCategory(this.appThis.currentCategory);
+                                this.applet.setActiveCategory(this.applet.currentCategory);
                             }));
             } else {
-                addMenuItem(new ContextMenuItem(this.appThis, _('Show hidden files'), null,
+                addMenuItem(new ContextMenuItem(this.applet, _('Show hidden files'), null,
                             () => {
-                                this.appThis.settings.showHiddenFiles = true;
+                                this.applet.settings.showHiddenFiles = true;
                                 this.close();
-                                this.appThis.setActiveCategory(this.appThis.currentCategory);
+                                this.applet.setActiveCategory(this.applet.currentCategory);
                             }));
             }
         }
@@ -221,7 +221,7 @@ class ContextMenu {
     _showMenu(e, buttonActor) {
         //----Position and open context menu----
         this.isOpen = true;
-        this.appThis.resizer.inhibit_resizing = true;
+        this.applet.resizer.inhibit_resizing = true;
 
         const monitor = Main.layoutManager.findMonitorForActor(this.menu.actor);
         let mx, my;
@@ -243,10 +243,10 @@ class ContextMenu {
         
         this.menu.actor.set_anchor_point(Math.round(cx - mx), Math.round(cy - my));
         
-        //This context menu doesn't have an St.Side and so produces errors in .xsession-errors.
-        //Enable animation here for the sole reason that it spams .xsession-errors less. Can't add an
-        //St.Side because in some themes it looks like it should be attached to a panel but isn't.
-        //Ideally, a proper floating popup menu should be coded.
+        // This context menu doesn't have an St.Side and so produces errors in .xsession-errors.
+        // Enable animation here for the sole reason that it spams .xsession-errors less. Can't add an
+        // St.Side because in some themes it looks like it should be attached to a panel but isn't.
+        // Ideally, a proper floating popup menu should be coded.
         this.menu.open(true);
         return;
     }
@@ -259,20 +259,20 @@ class ContextMenu {
 
         //Run with NVIDIA GPU
         if (Main.gpu_offload_supported) {
-            addMenuItem( new ContextMenuItem(this.appThis, _('Run with NVIDIA GPU'), 'cpu',
+            addMenuItem( new ContextMenuItem(this.applet, _('Run with NVIDIA GPU'), 'cpu',
                 () => {
                     try {
                         app.launch_offloaded(0, [], -1);
                     } catch (e) {
                         global.logError('Could not launch app with dedicated gpu: ', e);
                     }
-                    this.appThis.menu.close();
+                    this.applet.menu.close();
                 }
             ));
         }
 
         //Add to panel
-        addMenuItem(new ContextMenuItem(this.appThis, _('Add to panel'), 'list-add',
+        addMenuItem(new ContextMenuItem(this.applet, _('Add to panel'), 'list-add',
             () => {
                 if (!Main.AppletManager.get_role_provider_exists(Main.AppletManager.Roles.PANEL_LAUNCHER)) {
                     const new_applet_id = global.settings.get_int('next-applet-id');
@@ -293,7 +293,7 @@ class ContextMenu {
         //Add to desktop
         const userDesktopPath = getUserDesktopDir();
         if (userDesktopPath) {
-            addMenuItem( new ContextMenuItem(this.appThis, _('Add to desktop'), 'computer',
+            addMenuItem( new ContextMenuItem(this.applet, _('Add to desktop'), 'computer',
                 () => {
                     const file = Gio.file_new_for_path(app.get_app_info().get_filename());
                     const destFile = Gio.file_new_for_path(userDesktopPath + '/' + file.get_basename());
@@ -308,49 +308,49 @@ class ContextMenu {
             ));
         }
 
-        //add/remove favorite
-        if (this.appThis.appFavorites.isFavorite(app.id)) {
-            addMenuItem( new ContextMenuItem(this.appThis, _('Remove from favorites'), 'starred',
+        // add/remove favorite
+        if (this.applet.appFavorites.isFavorite(app.id)) {
+            addMenuItem( new ContextMenuItem(this.applet, _('Remove from favorites'), 'starred',
                 () => {
-                    this.appThis.appFavorites.removeFavorite(app.id);
+                    this.applet.appFavorites.removeFavorite(app.id);
                     this.close();
                 }
             ));
         } else {
-            addMenuItem( new ContextMenuItem(this.appThis, _('Add to favorites'), 'non-starred',
+            addMenuItem( new ContextMenuItem(this.applet, _('Add to favorites'), 'non-starred',
                 () => {
-                    this.appThis.appFavorites.addFavorite(app.id);
+                    this.applet.appFavorites.addFavorite(app.id);
                     this.close();
                 }
             ));
         }
 
-        //uninstall (Mint only)
-        if (this.appThis._canUninstallApps) {
-            addMenuItem( new ContextMenuItem(this.appThis, _('Uninstall'), 'edit-delete',
+        // uninstall (Mint only)
+        if (this.applet._canUninstallApps) {
+            addMenuItem( new ContextMenuItem(this.applet, _('Uninstall'), 'edit-delete',
                 () => {
                     Util.spawnCommandLine("/usr/bin/cinnamon-remove-application '" +
                                                 app.get_app_info().get_filename() + "'");
-                    this.appThis.menu.close();
+                    this.applet.menu.close();
                 }
             ));
         }
 
-        //show app info 
-        if (this.appThis._pamacManagerAvailable) {
-            addMenuItem( new ContextMenuItem(this.appThis, _('App Info'), 'dialog-information',
+        // show app info 
+        if (this.applet._pamacManagerAvailable) {
+            addMenuItem( new ContextMenuItem(this.applet, _('App Info'), 'dialog-information',
                 () => {
                     Util.spawnCommandLine("/usr/bin/pamac-manager --details-id=" + app.id);
-                    this.appThis.menu.close();
+                    this.applet.menu.close();
                 }
             ));
         }
 
-        //Properties
-        addMenuItem( new ContextMenuItem(this.appThis, _('Properties'), 'document-properties-symbolic',
+        // Properties
+        addMenuItem( new ContextMenuItem(this.applet, _('Properties'), 'document-properties-symbolic',
             () => {
                 Util.spawnCommandLine('cinnamon-desktop-editor -mlauncher -o ' + app.desktop_file_path);
-                this.appThis.menu.close();
+                this.applet.menu.close();
             }
         ));
     }
@@ -373,13 +373,13 @@ class ContextMenu {
 
         //Open with...
         if (fileExists) {
-            addMenuItem( new ContextMenuItem(this.appThis, _('Open with'), null, null));
+            addMenuItem( new ContextMenuItem(this.applet, _('Open with'), null, null));
             const defaultInfo = Gio.AppInfo.get_default_for_type(app.mimeType, !hasLocalPath(file));
             if (defaultInfo) {
-                addMenuItem( new ContextMenuItem(this.appThis, defaultInfo.get_display_name(), null,
+                addMenuItem( new ContextMenuItem(this.applet, defaultInfo.get_display_name(), null,
                     () => {
                         defaultInfo.launch([file], null);
-                        this.appThis.menu.close();
+                        this.applet.menu.close();
                     }
                 ));
             }
@@ -387,32 +387,32 @@ class ContextMenu {
                 if (!hasLocalPath(file) || !info.supports_uris() || info.equal(defaultInfo)) {
                     return;
                 }
-                addMenuItem( new ContextMenuItem(this.appThis, info.get_display_name(), null,
+                addMenuItem( new ContextMenuItem(this.applet, info.get_display_name(), null,
                     () => {
                         info.launch([file], null);
-                        this.appThis.menu.close();
+                        this.applet.menu.close();
                     }
                 ));
             });
-            addMenuItem( new ContextMenuItem(this.appThis, _('Other application...'), null,
+            addMenuItem( new ContextMenuItem(this.applet, _('Other application...'), null,
                 () => {
                     Util.spawnCommandLine('nemo-open-with ' + app.uri);
-                    this.appThis.menu.close();
+                    this.applet.menu.close();
                 }
             ));
         }
 
-        //add/remove favorite
-        this.menu.addMenuItem(new PopupSeparatorMenuItem(this.appThis));
+        // add/remove favorite
+        this.menu.addMenuItem(new PopupSeparatorMenuItem(this.applet));
         if (XApp.Favorites.get_default().find_by_uri(app.uri) !== null) { //favorite
-            addMenuItem( new ContextMenuItem(this.appThis, _('Remove from favorites'), 'starred',
+            addMenuItem( new ContextMenuItem(this.applet, _('Remove from favorites'), 'starred',
                 () => {
                     XApp.Favorites.get_default().remove(app.uri);
                     this.close();
                 }
             ));
         } else {
-            addMenuItem( new ContextMenuItem(this.appThis, _('Add to favorites'), 'non-starred',
+            addMenuItem( new ContextMenuItem(this.applet, _('Add to favorites'), 'non-starred',
                 () => {
                     XApp.Favorites.get_default().add(app.uri);
                     this.close();
@@ -420,45 +420,45 @@ class ContextMenu {
             ));
         }
 
-        //Add folder as category
-        if (app.isDirectory && this.appThis.settings.showCategories) {
+        // Add folder as category
+        if (app.isDirectory && this.applet.settings.showCategories) {
             const path = Gio.file_new_for_uri(app.uri).get_path();
-            if (!this.appThis.getIsFolderCategory(path)) {
-                this.menu.addMenuItem(new PopupSeparatorMenuItem(this.appThis));
-                addMenuItem(new ContextMenuItem(this.appThis, _('Add folder as category'), 'list-add',
+            if (!this.applet.getIsFolderCategory(path)) {
+                this.menu.addMenuItem(new PopupSeparatorMenuItem(this.applet));
+                addMenuItem(new ContextMenuItem(this.applet, _('Add folder as category'), 'list-add',
                     () => {
                         if (path === GLib.get_home_dir()) {
-                            this.appThis.settings.showHomeFolder = true;
+                            this.applet.settings.showHomeFolder = true;
                         }
-                        this.appThis.addFolderCategory(path);
-                        this.appThis.display.categoriesView.update();
+                        this.applet.addFolderCategory(path);
+                        this.applet.display.categoriesView.update();
                         this.close();
                     }
                 ));
             }
         }
 
-        //Open containing folder
+        // Open containing folder
         const folder = file.get_parent();
         if (app.isRecentFile || app.isFavoriteFile || app.isFolderviewFile) {
-            this.menu.addMenuItem(new PopupSeparatorMenuItem(this.appThis));
-            addMenuItem(new ContextMenuItem(this.appThis, _('Open containing folder'), 'go-jump',
+            this.menu.addMenuItem(new PopupSeparatorMenuItem(this.applet));
+            addMenuItem(new ContextMenuItem(this.applet, _('Open containing folder'), 'go-jump',
                 () => {
                     const fileBrowser = Gio.AppInfo.get_default_for_type('inode/directory', true);
                     fileBrowser.launch([folder], null);
-                    this.appThis.menu.close();
+                    this.applet.menu.close();
                 }
             ));
         }
 
-        //Move to trash
+        // Move to trash
         if (!app.isFavoriteFile) {
-            this.menu.addMenuItem(new PopupSeparatorMenuItem(this.appThis));
+            this.menu.addMenuItem(new PopupSeparatorMenuItem(this.applet));
 
             const fileInfo = file.query_info('access::can-trash', Gio.FileQueryInfoFlags.NONE, null);
             const canTrash = fileInfo.get_attribute_boolean('access::can-trash');
             if (canTrash) {
-                addMenuItem(new ContextMenuItem(this.appThis, _('Move to trash'), 'user-trash',
+                addMenuItem(new ContextMenuItem(this.applet, _('Move to trash'), 'user-trash',
                     () => {
                         const file = Gio.File.new_for_uri(app.uri);
                         try {
@@ -466,16 +466,16 @@ class ContextMenu {
                         } catch (e) {
                             Main.notify(_('Error while moving file to trash:'), e.message);
                         }
-                        this.appThis.setActiveCategory(this.appThis.currentCategory);
+                        this.applet.setActiveCategory(this.applet.currentCategory);
                         this.close();
                     }
                 ));
-            } else {//show insensitive item
-                addMenuItem( new ContextMenuItem(this.appThis, _('Move to trash'), 'user-trash',
+            } else { // show insensitive item
+                addMenuItem( new ContextMenuItem(this.applet, _('Move to trash'), 'user-trash',
                                                                         null, true /*insensitive*/));
             }
         }
-        return true; //success.
+        return true; // success.
     }
 
     getCurrentlyFocusedMenuItem() {
@@ -493,7 +493,7 @@ class ContextMenu {
     close() {
         this.menu.close();
         this.isOpen = false;
-        this.appThis.resizer.inhibit_resizing = false;
+        this.applet.resizer.inhibit_resizing = false;
     }
 
     destroy() {
