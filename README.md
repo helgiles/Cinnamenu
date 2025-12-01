@@ -2,7 +2,7 @@
 
 Cinnamenu
 ========
-_Version: 5.5.13 (updated 2/11/25)_ (Improve search results display)
+_Version: 5.5.14 (updated 1/12/25)_ (Add web search custom search URL + remove wikipedia search)
 
 Cinnamenu is a full featured alternative to the standard Cinnamon menu with grid layout and customisation options.
 
