@@ -289,7 +289,7 @@ class CategoriesView {
 
     update() {
         if (!this.applet.settings.showCategories)
-            return; // Not necessary but saves time.
+            return; // Not necessary but saves time since categories are hidden anyway.
 
         // Put all enabled categories into newButtons[] in default order by reusing the
         // buttons in this.buttons[] or by creating new CategoryButton.

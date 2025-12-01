@@ -219,6 +219,7 @@ class CinnamenuApplet extends TextIconApplet {
 
         { key: 'enable-emoji-search',       value: 'enableEmojiSearch',     cb: null },
         { key: 'web-search-option',         value: 'webSearchOption',       cb: null },
+        { key: 'web-search-custom-url',     value: 'webSearchCustomURL',    cb: null },
         { key: 'web-suggestions',           value: 'webSuggestionsOption',  cb: null },
         { key: 'enable-home-folder-search', value: 'searchHomeFolder',      cb: null },
         { key: 'enable-web-history-search', value: 'enableWebHistorySearch', cb: null },
@@ -1254,7 +1255,7 @@ class CinnamenuApplet extends TextIconApplet {
         if (this.settings.webSearchOption != 0 && !PREFIX_USED) { // 0==none
             const iconName = ['google_icon.png', 'bing_icon.png', 'search.png', 'yahoo_icon.png',
                             'search.png', 'duckgo_icon.png', 'ask.png', 'ecosia.png', 'search.png',
-                            'startpage.png', 'brave.png', 'qwant.png'][this.settings.webSearchOption - 1];
+                            'startpage.png', 'brave.png', 'qwant.png', 'search.png'][this.settings.webSearchOption - 1];
             const url = [   'https://google.com/search?q=',
                             'https://www.bing.com/search?q=',
                             'https://www.baidu.com/s?wd=',
@@ -1266,7 +1267,8 @@ class CinnamenuApplet extends TextIconApplet {
                             'https://search.aol.co.uk/aol/search?q=',
                             'https://www.startpage.com/sp/search?query=',
                             'https://search.brave.com/search?q=',
-                            'https://www.qwant.com/?q='][this.settings.webSearchOption - 1];
+                            'https://www.qwant.com/?q=',
+                            this.settings.webSearchCustomURL][this.settings.webSearchOption - 1];
 
             const gicon = new Gio.FileIcon({
                 file: Gio.file_new_for_path(__meta.path + '/../icons/' + iconName)
@@ -1441,7 +1443,7 @@ class CinnamenuApplet extends TextIconApplet {
                             Gio.FileQueryInfoFlags.NONE, GLib.PRIORITY_DEFAULT, null, (source, result) => {
                     try {
                         enumerator = source.enumerate_children_finish(result);
-                    } catch (e) {
+                    } catch(e) {
                         global.logWarning('Cinnamenu file search:' + e.message);
                     }
                     if (!this.searchActive || thisSearchId !== this.currentSearchId) {
@@ -1457,7 +1459,7 @@ class CinnamenuApplet extends TextIconApplet {
                             let fileInfos;
                             try {
                                 fileInfos = source.next_files_finish(result);
-                            } catch (e) {
+                            } catch(e) {
                                 global.logWarning('Cinnamenu file search:' + e.message);
                             }
                             if (!this.searchActive || thisSearchId !== this.currentSearchId) return;
@@ -1492,7 +1494,7 @@ class CinnamenuApplet extends TextIconApplet {
                                             const defaultInfo =
                                                         Gio.AppInfo.get_default_for_type('inode/directory', false);
                                             if (defaultInfo) {
-                                                foundFile.activate = () => {defaultInfo.launch([file], null); };
+                                                foundFile.activate = () => { defaultInfo.launch([file], null); };
                                             }
                                         }
                                         results.push(foundFile);
@@ -1812,7 +1814,7 @@ class CinnamenuApplet extends TextIconApplet {
             enumerator = dir.enumerate_children(
                 'standard::name,standard::type,standard::icon,standard::content-type,standard::is-hidden',
                                                                             0, null);
-        } catch (e) { // Folder access permission denied probably.
+        } catch(e) { // Folder access permission denied probably.
             errorMsg = e.message;
         }
         let next;
